@@ -30,7 +30,6 @@ wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR852/ERR852095/ERR852095.fastq.gz
 mv ERR852095.fastq.gz patient_1
 wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR852/ERR852093/ERR852093.fastq.gz
 mv ERR852093.fastq.gz patient_2pwd
-
 wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR852/ERR852096/ERR852096.fastq.gz
 mv ERR852096.fastq.gz patient_3
 wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR852/ERR852090/ERR852090.fastq.gz
@@ -41,7 +40,9 @@ wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR852/ERR852098/ERR852098.fastq.gz
 mv ERR852098.fastq.gz patient_6
 
 
-# for loop mowing everything to $SCRATCH
+# for loop moving everything to $SCRATCH
+cd $SCRATCH
+mkdir raw_data
 
 # running fastqc
 
@@ -55,9 +56,11 @@ module add fastqc # and number of version?
 
 # fastqc after trimming
 
+# copying resuls of fastqc from $SCRATCH to home storage
+
 # other things we are supposed to do
 
 # cleaning $SCRATCH
-rm -rf $SCRATCH
-exit
+rm -r $SCRATCH/*
+exit # maybe not necesary
 
