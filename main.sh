@@ -16,7 +16,10 @@ qsub -l walltime=2h -l mem=4gb -l scratch=40gb -l nodes=1:ppn=4
 # Results from each step of analysis will be in separate directory.
 cd /storage/brno2/home/marek_bfu # change to your favorite storage
 mkdir -p Bi5444/raw_data
-cd Bi5444/raw_data
+cd Bi5444
+mkdir fastqc_before_trim
+mkdir fastqc_after_trim
+cd raw_data
 
 # Because the files have random names we cannot use for loop. Once each file is downloaded it is renamed to avoid confusion.
 # I'm going to download them into my storage, then rename them and only after that copy them to  $scratch and work with them.
