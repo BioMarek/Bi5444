@@ -52,30 +52,32 @@ mv ERR852098.fastq.gz patient_6.fastq.gz
 
 
 ##########################################################################
-#                          FASTQC SCRIPT                                 #
+#                    FASTQC BEFORE TRIMMING SCRIPT                       #
 ##########################################################################
 
 #!/bin/bash
 # for loop copying everything to $SCRATCH and unpacking - NEEDS TEST!!!
 # on metacentrum fasqc refuses to take *.gz file as input so that's the reason I'm unpacking it.
-cd $SCRATCH
-mkdir -p raw_data/fastqc_before_trim
-mkdir raw_data/fastqc_after_trim
-cd /storage/brno2/home/marek_bfu/Bi5444/raw_sequences # (☞ﾟヮﾟ)☞ change to your favorite storage ☜(ﾟヮﾟ☜)
+cd /storage/brno2/home/marek_bfu/Bi5444 # (☞ﾟヮﾟ)☞ change to your favorite storage ☜(ﾟヮﾟ☜)
+mkdir fastqc_before_trim
+cd /storage/brno2/home/marek_bfu/Bi5444/raw_sequences
 
 for file in *
 do
-  cp $file $SCRATCH/raw_data/$file
+  echo copying "$file" # just to know where we are
+  cp $file $SCRATCH/$file
   gunzip $file
 done
 
-# TODO running fastqc
-cd $SCRATCH/raw_data
+cd $SCRATCH
 module add fastQC-0.10.1
 for file in *
 do
   fastqc $file
 done
+mv *.zip /storage/brno2/home/marek_bfu/Bi5444/fastqc_before_trim/ # don't forget to copy file to your computer
+
+rm -rf $SCRATCH/*
 
 
 # TODO copying resuls of fastqc from $SCRATCH to home storage
