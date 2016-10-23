@@ -26,7 +26,7 @@ cd raw_data
 wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR852/ERR852089/ERR852089.fastq.gz
 mv ERR852089.fastq.gz control_1.fastq.gz
 wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR852/ERR852099/ERR852099.fastq.gz
-mv ERR852089.fastq.gz control_2.fastq.gz
+mv ERR852099.fastq.gz control_2.fastq.gz
 ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR852/ERR852097/ERR852097.fastq.gz
 mv ERR852097.fastq.gz control_3.fastq.gz
 ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR852/ERR852092/ERR852092.fastq.gz
