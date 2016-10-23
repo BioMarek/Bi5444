@@ -1,4 +1,4 @@
-#!/bin/bash
+
 
 ##########################################################################
 #   I have started already, feel free to improve any part of the code.   #
@@ -13,25 +13,28 @@
 # Request for machine. This is just temporary, maybe we will need to change settings later.
 qsub -l walltime=2h -l mem=4gb -l scratch=40gb -l nodes=1:ppn=4
 
-# Results from each step of analysis will be in separate directory.
-cd /storage/brno2/home/marek_bfu # change to your favorite storage
-mkdir -p Bi5444/raw_data
-cd Bi5444
-mkdir fastqc_before_trim
-mkdir fastqc_after_trim
-cd raw_data
 
-# Because the files have random names we cannot use for loop. Once each file is downloaded it is renamed to avoid confusion.
+##########################################################################
+#                       DOWNLOADING SCRIPT                               #
+##########################################################################
+#!/bin/bash
+# Don't forget dos2unix if working on windows
+# Results from each step of analysis will be in separate directory.
+cd /storage/brno2/home/marek_bfu # (☞ﾟヮﾟ)☞ change to your favorite storage ☜(ﾟヮﾟ☜)
+mkdir -p Bi5444/raw_sequences
+cd Bi5444/raw_sequences
+
+# Because the files have random names we cannot use for loop. ¯\_(ツ)_/¯ Once each file is downloaded it is renamed to avoid confusion.
 # I'm going to download them into my storage, then rename them and only after that copy them to  $scratch and work with them.
 wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR852/ERR852089/ERR852089.fastq.gz
 mv ERR852089.fastq.gz control_1.fastq.gz
 wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR852/ERR852099/ERR852099.fastq.gz
 mv ERR852099.fastq.gz control_2.fastq.gz
-ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR852/ERR852097/ERR852097.fastq.gz
+wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR852/ERR852097/ERR852097.fastq.gz
 mv ERR852097.fastq.gz control_3.fastq.gz
-ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR852/ERR852092/ERR852092.fastq.gz
+wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR852/ERR852092/ERR852092.fastq.gz
 mv ERR852092.fastq.gz control_4.fastq.gz
-ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR852/ERR852091/ERR852091.fastq.gz
+wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR852/ERR852091/ERR852091.fastq.gz
 mv ERR852091.fastq.gz control_5.fastq.gz
 
 wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR852/ERR852095/ERR852095.fastq.gz
@@ -48,9 +51,18 @@ wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR852/ERR852098/ERR852098.fastq.gz
 mv ERR852098.fastq.gz patient_6.fastq.gz
 
 
+##########################################################################
+#                          FASTQC SCRIPT                                 #
+##########################################################################
+
+#!/bin/bash
 # for loop copying everything to $SCRATCH and unpacking - NEEDS TEST!!!
 # on metacentrum fasqc refuses to take *.gz file as input so that's the reason I'm unpacking it.
-mkdir $SCRATCH/raw_data
+cd $SCRATCH
+mkdir -p raw_data/fastqc_before_trim
+mkdir raw_data/fastqc_after_trim
+cd /storage/brno2/home/marek_bfu/Bi5444/raw_sequences # (☞ﾟヮﾟ)☞ change to your favorite storage ☜(ﾟヮﾟ☜)
+
 for file in *
 do
   cp $file $SCRATCH/raw_data/$file
@@ -58,12 +70,17 @@ do
 done
 
 # TODO running fastqc
+cd $SCRATCH/raw_data
 module add fastQC-0.10.1
-mkdir fastqc_before_trim
-cd fastqc_before_trim
+for file in *
+do
+  fastqc $file
+done
 
 
 # TODO copying resuls of fastqc from $SCRATCH to home storage
+
+# TODO adapter searchig
 
 # TODO adapter trimming
 
