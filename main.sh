@@ -56,7 +56,7 @@ mv ERR852098.fastq.gz patient_6.fastq.gz
 ##########################################################################
 
 #!/bin/bash
-# for loop copying everything to $SCRATCH and unpacking - NEEDS TEST!!!
+# for loop copying everything to $SCRATCH and unpacking
 # on metacentrum fasqc refuses to take *.gz file as input so that's the reason I'm unpacking it.
 cd /storage/brno2/home/marek_bfu/Bi5444 # (☞ﾟヮﾟ)☞ change to your favorite storage ☜(ﾟヮﾟ☜)
 mkdir fastqc_before_trim
