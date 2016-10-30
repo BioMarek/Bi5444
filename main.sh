@@ -108,9 +108,10 @@ cd $DATASET_DIR # Go to the input folder
 
 # Start minion and swan
 for i in *
-do
-	minion search-adapter -i $i -show 5 -write-fasta $OUTPUT_DIR/${i%.*}.minion.fasta # Identify top 5 over-represented sequences
-	swan -r $ADAPTERS -q $OUTPUT_DIR/${i%.*}.minion.fasta > $OUTPUT_DIR/${i%.*}.minion.compare # Compare them with list of adapters
+do	
+	# I used absoulte paths to folder where I compiled swan and minion.
+	/storage/brno2/home/marek_bfu/reaper-15-065/src/minion search-adapter -i $i -show 5 -write-fasta $OUTPUT_DIR/${i%.*}.minion.fasta # Identify top 5 over-represented sequences
+	/storage/brno2/home/marek_bfu/reaper-15-065/src/swan -r $ADAPTERS -q $OUTPUT_DIR/${i%.*}.minion.fasta > $OUTPUT_DIR/${i%.*}.minion.compare # Compare them with list of adapters
 done
 
 
