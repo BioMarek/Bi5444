@@ -141,11 +141,15 @@ done
 ###################################################################################################
 ##SPECIFY DATA VARIABLES###
 INPUT_SUFFIX=".fastq.gz" # Suffix of files to launch the analysis on
-DATASET_DIR=/storage/brno2/home/marek_bfu/Bi5444/raw_sequences
-OUTPUT_DIR=/storage/brno2/home/marek_bfu/Bi5444/trimming
+DATASET_DIR=/storage/brno2/home/marek_bfu/Bi5444/raw_sequences #path to input raw sequences
+OUTPUT_DIR=/storage/brno2/home/marek_bfu/Bi5444/trimming #path to output seqquences
 
 FILE_FORMAT=fastq # File format
 QUALITY=33 # Phred coding of input files
+
+### What kind of coding is used for Phred? ##
+##head -n 40 $datafile | awk '{if(NR%4==0) printf("%s",$0);}' |  od -A n -t u1 | awk 'BEGIN{min=100;max=0;}{for(i=1;i<=NF;i++) {if($i>max) max=$i; if($i<min) min=$i;}}END{if(max<=74 && min<59) print "Phred+33"; else if(max>73 && min>=64) print "Phred+64"; else if(min>=59 && min<64 && max>73) print "Solexa+64"; else print "Unknown score encoding\!";}'
+
 
 ##CUTADAPT VARIABLES#
 QT_THRESHOLD=5 # Threshold for quality trimming; we filter by number of mismatches so we need high quality reads
@@ -161,10 +165,12 @@ QF_PERC=85 # Minimal percentage of bases with $QF_THRESHOLD
 
 ##Add modules
 
-module add python27-modules-gcc  #add Cudadapt module
-module add python27-modules-intel 
+#add Cudadapt module
+module add python27-modules-gcc  
+module add python27-modules-intel
 
-module add fastx-0.0.13 #add FastX toolkit
+#add FastX toolkit
+module add fastx-0.0.13 
 
 ###################################################################################################
 ###SCRIPT BODY###
