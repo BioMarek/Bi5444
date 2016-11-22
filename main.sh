@@ -175,7 +175,9 @@ cd $DATASET_DIR # Go to the input directory
 for sample in *$INPUT_SUFFIX # For each file with specified suffix in the directory do the pre-processing loop
 do
 	# Cutadapt adapter removal, quality trimming, N bases removal  and length filtering
-	cutadapt --format $FILE_FORMAT --quality-cutoff $QT_THRESHOLD,$QT_THRESHOLD --trim-n --max-n=0 --minimum-length $DISC_SHORT --maximum-length $DISC_LONG -o $$OUTPUT_DIR/${sample%.fastq*}.ad3trim.fastq.gz --untrimmed-output=$OUTPUT_DIR/${sample%.fastq*}.ad3untrimmed.fastq.gz $sample
+	cutadapt --format $FILE_FORMAT --quality-cutoff $QT_THRESHOLD,$QT_THRESHOLD --trim-n --max-n=0 \
+	--minimum-length $DISC_SHORT --maximum-length $DISC_LONG -o $OUTPUT_DIR/${sample%.fastq*}.ad3trim.fastq.gz \
+	--untrimmed-output=$OUTPUT_DIR/${sample%.fastq*}.ad3untrimmed.fastq.gz $sample
 
 	# Fastx-toolkig quality filtering; to use gz as input/output https://www.biostars.org/p/83237/
 	gunzip -c $OUTPUT_DIR/${sample%.fastq*}.ad3trim.fastq.gz | fastq_quality_filter -Q $QUALITY -q $QF_THRESHOLD -p $QF_PERC -z -o $OUTPUT_PATH/${sample%.fastq*}.mirna.fastq.gz
