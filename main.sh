@@ -160,7 +160,8 @@ QF_PERC=85 # Minimal percentage of bases with $QF_THRESHOLD
 
 ##Add modules
 
-module add python26-modules-intel #add Cudadapt module
+module add python27-modules-gcc  #add Cudadapt module
+module add python27-modules-intel 
 
 module add module add fastx-0.0.13 #add FastX toolkit
 
@@ -173,10 +174,10 @@ cd $DATASET_DIR # Go to the input directory
 for sample in *$INPUT_SUFFIX # For each file with specified suffix in the directory do the pre-processing loop
 do
 	# Cutadapt adapter removal, quality trimming, N bases removal  and length filtering
-	$CUTADAPT_BIN/cutadapt --format $FILE_FORMAT --trim-qualities $QT_THRESHOLD,$QT_THRESHOLD --trim-n --max-n=0 --minimum-length $DISC_SHORT --maximum-length $DISC_LONG -o $$OUTPUT_DIR/${sample%.fastq*}.ad3trim.fastq.gz --untrimmed-output=$OUTPUT_DIR/${sample%.fastq*}.ad3untrimmed.fastq.gz $sample
+	cutadapt --format $FILE_FORMAT --trim-qualities $QT_THRESHOLD,$QT_THRESHOLD --trim-n --max-n=0 --minimum-length $DISC_SHORT --maximum-length $DISC_LONG -o $$OUTPUT_DIR/${sample%.fastq*}.ad3trim.fastq.gz --untrimmed-output=$OUTPUT_DIR/${sample%.fastq*}.ad3untrimmed.fastq.gz $sample
 
 	# Fastx-toolkig quality filtering; to use gz as input/output https://www.biostars.org/p/83237/
-	gunzip -c $OUTPUT_DIR/${sample%.fastq*}.ad3trim.fastq.gz | $FASTXTOOLKIT_BIN/fastq_quality_filter -Q $QUALITY -q $QF_THRESHOLD -p $QF_PERC -z -o $OUTPUT_PATH/${sample%.fastq*}.mirna.fastq.gz
+	gunzip -c $OUTPUT_DIR/${sample%.fastq*}.ad3trim.fastq.gz | fastq_quality_filter -Q $QUALITY -q $QF_THRESHOLD -p $QF_PERC -z -o $OUTPUT_PATH/${sample%.fastq*}.mirna.fastq.gz
 done
 
 ###################################################################################################
