@@ -152,14 +152,17 @@ QT_THRESHOLD=5 # Threshold for quality trimming; we filter by number of mismatch
 DISC_SHORT=14 # Discard too short sequences after the pre-processing
 DISC_LONG=30 # Discard too long after the pre-processing
 
-module add cutadapt
-CUTADAPT_BIN=/home/jan/Tools/cutadapt-1.9.1/bin # bin directory where you installed your cutadapt tool
+
 
 ##FASTX - QUALITY FILTERING VARIABLES###
 QF_THRESHOLD=10 # Threshold for quality filtering
 QF_PERC=85 # Minimal percentage of bases with $QF_THRESHOLD
 
-FASTXTOOLKIT_BIN=/home/jan/Tools/fastx_toolkit-0.0.14/bin # bin directory where you installed you fastx-toolkit tool
+##Add modules
+
+module add python26-modules-intel #add Cudadapt module
+
+module add module add fastx-0.0.13 #add FastX toolkit
 
 ###################################################################################################
 ###SCRIPT BODY###
