@@ -186,7 +186,8 @@ do
 	--untrimmed-output=$OUTPUT_DIR/${sample%.fastq*}.ad3untrimmed.fastq.gz $sample
 
 	# Fastx-toolkig quality filtering; to use gz as input/output https://www.biostars.org/p/83237/
-	gunzip -c $OUTPUT_DIR/${sample%.fastq*}.ad3trim.fastq.gz | fastq_quality_filter -Q $QUALITY -q $QF_THRESHOLD -p $QF_PERC -z -o $OUTPUT_PATH/${sample%.fastq*}.mirna.fastq.gz
+	gunzip -c $OUTPUT_DIR/${sample%.fastq*}.ad3trim.fastq.gz | fastq_quality_filter -Q $QUALITY \
+	-q $QF_THRESHOLD -p $QF_PERC -z -o $OUTPUT_DIR/${sample%.fastq*}.mirna.fastq.gz
 done
 
 ###################################################################################################
