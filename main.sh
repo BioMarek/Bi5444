@@ -115,9 +115,76 @@ do
 done
 
 
-# TODO adapter trimming
 
-# TODO fastqc after trimming
+
+
+
+
+
+
+
+####################################################3
+#!/bin/bash
+
+###################################################################################################
+###INFORMATION ABOUT THE SCRIPT###
+# Pre-processing script designed for microRNAs analysis using Cutadapt (http://cutadapt.readthedocs.io/en/stable/index.html) and Fastx-toolkit (http://hannonlab.cshl.edu/fastx_toolkit/)
+# It is focused for later use of Chimira (http://www.ebi.ac.uk/research/enright/software/chimira) and DESeq2 (https://bioconductor.org/packages/release/bioc/html/DESeq2.html) later on
+#
+# The script does following stepts in order to preprocess data for mapping
+# 1) Adapter trimming
+# 2) Quality trimming
+# 3) Size filtering
+# 4) Quality filtering 
+
+###################################################################################################
+##SPECIFY DATA VARIABLES###
+INPUT_SUFFIX=".fastq.gz" # Suffix of files to launch the analysis on
+DATASET_DIR=/storage/brno2/home/marek_bfu/Bi5444/raw_sequences
+OUTPUT_DIR=/storage/brno2/home/marek_bfu/Bi5444/trimming
+
+FILE_FORMAT=fastq # File format
+QUALITY=33 # Phred coding of input files
+
+##CUTADAPT VARIABLES#
+QT_THRESHOLD=5 # Threshold for quality trimming; we filter by number of mismatches so we need high quality reads
+
+DISC_SHORT=14 # Discard too short sequences after the pre-processing
+DISC_LONG=30 # Discard too long after the pre-processing
+
+module add cutadapt
+CUTADAPT_BIN=/home/jan/Tools/cutadapt-1.9.1/bin # bin directory where you installed your cutadapt tool
+
+##FASTX - QUALITY FILTERING VARIABLES###
+QF_THRESHOLD=10 # Threshold for quality filtering
+QF_PERC=85 # Minimal percentage of bases with $QF_THRESHOLD
+
+FASTXTOOLKIT_BIN=/home/jan/Tools/fastx_toolkit-0.0.14/bin # bin directory where you installed you fastx-toolkit tool
+
+###################################################################################################
+###SCRIPT BODY###
+mkdir -p $OUTPUT_DIR # Create output directory including tmp folder for additional results
+
+cd $DATASET_DIR # Go to the input directory
+
+for sample in *$INPUT_SUFFIX # For each file with specified suffix in the directory do the pre-processing loop
+do
+	# Cutadapt adapter removal, quality trimming, N bases removal  and length filtering
+	$CUTADAPT_BIN/cutadapt --format $FILE_FORMAT -a $ADAPTER3_SEQ1 --times $NUM_ADAPT_TO_REMOVE -e $ERROR_RATE --overlap $MIN_OVERLAP --trim-qualities $QT_THRESHOLD,$QT_THRESHOLD --trim-n --max-n=0 --minimum-length $DISC_SHORT --maximum-length $DISC_LONG -o $OUTPUT_PATH/tmp/${sample%.fastq*}.ad3trim.fastq.gz --untrimmed-output=$OUTPUT_PATH/tmp/${sample%.fastq*}.ad3untrimmed.fastq.gz $sample
+
+	# Fastx-toolkig quality filtering; to use gz as input/output https://www.biostars.org/p/83237/
+	gunzip -c $OUTPUT_PATH/tmp/${sample%.fastq*}.ad3trim.fastq.gz | $FASTXTOOLKIT_BIN/fastq_quality_filter -Q $QUALITY -q $QF_THRESHOLD -p $QF_PERC -z -o $OUTPUT_PATH/${sample%.fastq*}.mirna.fastq.gz
+done
+
+###################################################################################################
+###ANALYSIS DONE###
+
+
+
+
+
+
+
 
 # TODO copying resuls of fastqc from $SCRATCH to home storage
 
