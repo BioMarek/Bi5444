@@ -183,7 +183,9 @@ do
 	# Cutadapt adapter removal, quality trimming, N bases removal  and length filtering
 	cutadapt --quality-cutoff $QT_THRESHOLD,$QT_THRESHOLD --trim-n --max-n=0 \
 	--minimum-length $DISC_SHORT --maximum-length $DISC_LONG -o $OUTPUT_DIR/${sample%.fastq*}.ad3trim.fastq.gz \
-	--untrimmed-output=$OUTPUT_DIR/${sample%.fastq*}.ad3untrimmed.fastq.gz $sample #cuadapt detects format automatically
+	# --untrimmed-output=$OUTPUT_DIR/${sample%.fastq*}.ad3untrimmed.fastq.gz \
+	#we do not have adapters, we do only size and quality filtering, so we cannot use --untrimmed-output =Write all reads without adapters to FILE (in FASTA/FASTQ format) instead of writing them to the regular output file.\
+	$sample #cuadapt detects format automatically
 
 	# Fastx-toolkig quality filtering; to use gz as input/output https://www.biostars.org/p/83237/
 	gunzip -c $OUTPUT_DIR/${sample%.fastq*}.ad3trim.fastq.gz | fastq_quality_filter -Q $QUALITY \
