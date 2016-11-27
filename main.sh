@@ -187,7 +187,7 @@ do
 	#we do not have adapters, we do only size and quality filtering, so we cannot use --untrimmed-output =Write all reads without adapters to FILE (in FASTA/FASTQ format) instead of writing them to the regular output file.\
 	$sample #cuadapt detects format automatically
 
-	# Fastx-toolkig quality filtering; to use gz as input/output https://www.biostars.org/p/83237/
+	# Fastx-toolkit quality filtering; to use gz as input/output https://www.biostars.org/p/83237/
 	gunzip -c $OUTPUT_DIR/${sample%.fastq*}.ad3trim.fastq.gz | fastq_quality_filter -Q $QUALITY \
 	-q $QF_THRESHOLD -p $QF_PERC -z -o $OUTPUT_DIR/${sample%.fastq*}.mirna.fastq.gz
 done
