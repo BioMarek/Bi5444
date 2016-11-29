@@ -199,18 +199,22 @@ done
 #                       	DESeq2 analysis                          #
 ##########################################################################
 
-ssh -X skirtit.metacentrum.cz
-qsub -l walltime=2h -l mem=4gb -l scratch=40gb -l nodes=1:ppn=4 -I -X # but there are errors
+ssh -X skirtit.metacentrum.cz #if we want to use graphical programs, they will open in our computer
+qsub -l walltime=2h -l mem=4gb -l scratch=40gb -l nodes=1:ppn=4 -I #ask for interactive job
+
+
+#go to $SCRATCH and perform the analysis there
+#cd $SCRATCH/
+
+#copy data to $SCRATCH
+#cp my/favourite/metacentrum/storage/file $SCRATCH/
+
 module add rstudio
 rstudio
 
-# in rstudio install bioconductor File -> New File -> R Script
-source("http://bioconductor.org/biocLite.R")
-biocLite()
 
-# install DESeq2
-source("http://bioconductor.org/biocLite.R")
-biocLite("DESeq2")
+# v rstudiu pak
+
 
 
 
