@@ -200,7 +200,7 @@ done
 ##########################################################################
 
 ssh -X skirtit.metacentrum.cz
-qsub -l walltime=2h -l mem=4gb -l scratch=40gb -l nodes=1:ppn=4 -I
+qsub -l walltime=2h -l mem=4gb -l scratch=40gb -l nodes=1:ppn=4 -I -X # but there are errors
 module add rstudio
 rstudio
 
