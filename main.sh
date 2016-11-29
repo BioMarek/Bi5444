@@ -204,8 +204,13 @@ qsub -l walltime=2h -l mem=4gb -l scratch=40gb -l nodes=1:ppn=4 -I
 module add rstudio
 rstudio
 
-# v rstudiu pak
+# i rstudiu install bioconductor
+source("http://bioconductor.org/biocLite.R")
+biocLite()
 
+# install DESeq2
+source("http://bioconductor.org/biocLite.R")
+biocLite("DESeq2")
 
 
 
