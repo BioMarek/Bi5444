@@ -213,7 +213,7 @@ module add rstudio
 rstudio
 
 # in rstudio File -> New File -> R Script
-# install bioconductor
+# install bioconductor, run with ctrl + enter, when asked "update all/some/none" pres n
 source("http://bioconductor.org/biocLite.R")
 biocLite()
 
