@@ -204,7 +204,7 @@ qsub -l walltime=2h -l mem=4gb -l scratch=40gb -l nodes=1:ppn=4 -I
 module add rstudio
 rstudio
 
-# i rstudiu install bioconductor
+# in rstudio install bioconductor File -> New File -> R Script
 source("http://bioconductor.org/biocLite.R")
 biocLite()
 
