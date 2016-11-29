@@ -215,7 +215,7 @@ rstudio
 
 # in rstudio File -> New File -> R Script
 
-## Install packeges
+## Install packages
 install.packages("pheatmap")
 install.packages("rgl")
 install.packages("gplots")
