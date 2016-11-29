@@ -195,7 +195,16 @@ done
 ###ANALYSIS DONE###
 
 
+##########################################################################
+#                       	DESeq2 analysis                          #
+##########################################################################
 
+ssh -X skirtit.metacentrum.cz
+qsub -l walltime=2h -l mem=4gb -l scratch=40gb -l nodes=1:ppn=4 -I
+module add rstudio
+rstudio
+
+# v rstudiu pak
 
 
 
