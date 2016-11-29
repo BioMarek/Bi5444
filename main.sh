@@ -198,9 +198,10 @@ done
 ##########################################################################
 #                       	DESeq2 analysis                          #
 ##########################################################################
+## DESeq2 is an R package, so it is necessarry to work in R, either in Metacentrum (described bellow) or install R and RStudio at home computer##
 
 ssh -X skirtit.metacentrum.cz #if we want to use graphical programs, they will open in our computer
-qsub -l walltime=2h -l mem=4gb -l scratch=40gb -l nodes=1:ppn=4 -I -X #ask for interactive job
+qsub -l walltime=2h -l mem=4gb -l scratch=40gb -l nodes=1:ppn=4 -I -X #ask for interactive job, ask for graphical output to run in our window
 
 
 #go to $SCRATCH and perform the analysis there
@@ -213,6 +214,12 @@ module add rstudio
 rstudio
 
 # in rstudio File -> New File -> R Script
+
+## Install packeges
+install.packages("pheatmap")
+install.packages("rgl")
+install.packages("gplots")
+
 # install bioconductor, run with ctrl + enter, when asked "update all/some/none" pres n
 source("http://bioconductor.org/biocLite.R")
 biocLite()
@@ -225,9 +232,9 @@ biocLite("DESeq2")
 
 
 
-# TODO copying resuls of fastqc from $SCRATCH to home storage
 
-# TODO other things we are supposed to do
+
+
 
 # cleaning $SCRATCH
 rm -r $SCRATCH/*
