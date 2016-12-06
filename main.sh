@@ -270,13 +270,13 @@ mrcounts<-mrcounts[rowSums(mrcounts)!=0,] # Remove not expressed genes in any sa
 
 
 ####################################################################################################
-# create table for DESeq2, ke jmenu sloupce proradit co je kontrola, co je pacient
-coldata<-as.data.frame(t(t(conds))) #vzmenit radkz ya sloupce
-colnames(coldata)<-"condition" #popis radku a sloupcu
-rownames(coldata)<-colnames(mrcounts)
-coldata<-as.data.frame(coldata) #ujisteni, ye to je data frame
+# create table for DESeq2, 
+coldata<-as.data.frame(t(t(conds))) #create table, use number of rows according to conds
+colnames(coldata)<-"condition" #name header of the column "condition"
+rownames(coldata)<-colnames(mrcounts) #assign rows the rownames from table mrcounts
+coldata<-as.data.frame(coldata) #make sure it is a data frame (table)
 
-sink("deseq2_design_control.txt") #ukladani vystupu z R (misto na obrazovku uklada do souboru tak, jak by se to vypisovalo do terminalu)
+sink("deseq2_design_control.txt") #save output from R into a file (it saves the output that would be in terminal into a file)
   coldata
 sink()
 #otveru si "deseq2_design_control.txt" a zkontroluju, jak to dopadlo
