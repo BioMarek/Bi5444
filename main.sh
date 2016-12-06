@@ -245,7 +245,7 @@ biocLite("DESeq2")
 ####################################################################################################
 # General variables
 INPUT_COUNTS<-"$SCRATCH/All_plain_counts.counts" 
-OUTPUT_DIR<-"/home/jan/Data/projects/katka_mirna/results/both/reselection/test"
+OUTPUT_DIR<-"$SCRATCH/results/"
 
 ####################################################################################################
 # Custom variables
