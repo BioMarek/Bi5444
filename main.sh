@@ -200,7 +200,7 @@ done
 ##########################################################################
 ## DESeq2 is an R package, so it is necessarry to work in R, either in Metacentrum (described bellow) or install R and RStudio at home computer##
 
-ssh -X skirtit.metacentrum.cz #if we want to use graphical programs, they will open in our computer
+ssh -X skirit.metacentrum.cz #if we want to use graphical programs, they will open in our computer
 qsub -l walltime=2h -l mem=4gb -l scratch=40gb -l nodes=1:ppn=4 -I -X #ask for interactive job, ask for graphical output to run in our window
 
 
