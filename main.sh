@@ -244,16 +244,19 @@ biocLite("DESeq2")
 
 ####################################################################################################
 # General variables
-INPUT_COUNTS<-"/home/jan/Data/projects/katka_mirna/results/2015.mirna.counts" 
+INPUT_COUNTS<-"$SCRATCH/All_plain_counts.counts" 
 OUTPUT_DIR<-"/home/jan/Data/projects/katka_mirna/results/both/reselection/test"
 
 ####################################################################################################
 # Custom variables
 P_THRESHOLD<-0.05
-LFC_THRESHOLD<-log(1.5, 2) #log2 fold change, important results will be in range
+LFC_THRESHOLD<-log(1.5, 2) #log2 fold change, important results will be in range given in brackets
 TOP<-20 # How many top DE miRNAs should be plotted
 
 ####################################################################################################
+dir.create(OUTPUT_DIR, recursive = T)
+setwd(OUTPUT_DIR)
+
 # Processing
 mrcounts<-read.table(INPUT_COUNTS, header=TRUE, row.names=1)
 
@@ -264,8 +267,7 @@ conds<-factor(c(rep("pre", 7), rep("post", 7)), levels=c("pre", "post")) # Set c
 
 mrcounts<-mrcounts[rowSums(mrcounts)!=0,] # Remove not expressed genes in any sample
 
-dir.create(OUTPUT_DIR, recursive = T)
-setwd(OUTPUT_DIR)
+
 
 ####################################################################################################
 # create table for DESeq2, ke jmenu sloupce proradit co je kontrola, co je pacient
