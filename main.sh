@@ -169,7 +169,10 @@ QF_PERC=85 # Minimal percentage of bases with $QF_THRESHOLD
 module add python27-modules-gcc  
 module add python27-modules-intel
 
-#add FastX toolkit
+####################################################################################################
+####################################################################################################
+# Script to calculate differential gene expression using DESeq2 and edgeR package
+# Designed for miRNA differential gene expression analysis based on miRBase results#add FastX toolkit
 module add fastx-0.0.13 
 
 ###################################################################################################
@@ -214,6 +217,16 @@ module add rstudio
 rstudio
 
 # in rstudio File -> New File -> R Script
+####################################################################################################
+####################################################################################################
+# Script to calculate differential gene expression using DESeq2 and edgeR package
+# Designed for miRNA differential gene expression analysis based on miRBase results
+#
+# INPUT_COUNTS - table with raw genes counts -> first column = miRBase gene id, first row = patient id
+####################################################################################################
+####################################################################################################
+#
+#rm(list=ls(all=TRUE)) ##removes all variables that were stored in rstudio from older projects
 
 ## Install packages
 install.packages("pheatmap")
@@ -229,6 +242,230 @@ source("http://bioconductor.org/biocLite.R")
 biocLite("DESeq2")
 
 
+####################################################################################################
+# General variables
+INPUT_COUNTS<-"/home/jan/Data/projects/katka_mirna/results/2015.mirna.counts" 
+OUTPUT_DIR<-"/home/jan/Data/projects/katka_mirna/results/both/reselection/test"
+
+####################################################################################################
+# Custom variables
+P_THRESHOLD<-0.05
+LFC_THRESHOLD<-log(1.5, 2) #log2 fold change, important results will be in range
+TOP<-20 # How many top DE miRNAs should be plotted
+
+####################################################################################################
+# Processing
+mrcounts<-read.table(INPUT_COUNTS, header=TRUE, row.names=1)
+
+mrcounts<-mrcounts[,c("X1PRE_s0_L001", "X2PRE_s0_L001", "X3PRE_s0_L001", "X5PRE_s0_L001", "X6PRE_s0_L001", "X7PRE_s0_L001", "X9PRE_s0_L001", 
+                        "X1D15_s1_L001", "X2D15_s1_L001", "X3D15_s1_L001", "X5W12_s1_L001", "X6W5_s1_L001", "X7W5_s1_L001", "X9D15_s1_L001")] # Select and reorder columns, in R we read tables table[rows,columns], so if I want to see first column: table [,1]
+
+conds<-factor(c(rep("pre", 7), rep("post", 7)), levels=c("pre", "post")) # Set conditions and make sure they are in correct order, factor-in R define levels
+
+mrcounts<-mrcounts[rowSums(mrcounts)!=0,] # Remove not expressed genes in any sample
+
+dir.create(OUTPUT_DIR, recursive = T)
+setwd(OUTPUT_DIR)
+
+####################################################################################################
+# create table for DESeq2, ke jmenu sloupce proradit co je kontrola, co je pacient
+coldata<-as.data.frame(t(t(conds))) #vzmenit radkz ya sloupce
+colnames(coldata)<-"condition" #popis radku a sloupcu
+rownames(coldata)<-colnames(mrcounts)
+coldata<-as.data.frame(coldata) #ujisteni, ye to je data frame
+
+sink("deseq2_design_control.txt") #ukladani vystupu z R (misto na obrazovku uklada do souboru tak, jak by se to vypisovalo do terminalu)
+  coldata
+sink()
+#otveru si "deseq2_design_control.txt" a zkontroluju, jak to dopadlo
+####################################################################################################
+####################################################################################################
+# DESeq2 part
+# Make the count object, normalise, dispersion and testing, read manual DESeq2
+library("DESeq2")
+
+dds<-DESeqDataSetFromMatrix(countData = mrcounts, colData = coldata, design = ~condition)
+
+# Make sure the levels are correct
+dds$condition<-factor(dds$condition, levels=levels(coldata$condition)) # Make sure conditions are levels 
+
+# The same thing which follows be calculated by >DESeq(dds) instead of three separate commands
+dds<-estimateSizeFactors(dds)
+dds<-estimateDispersions(dds)
+dds<-nbinomWaldTest(dds) 
+cds<-dds
+
+####################################################################################################
+# DESeq2 results visualization
+res<-results(cds, contrast=c("condition", levels(conds)[2], levels(conds)[1])) # Extract contrasts of interest
+res<-res[order(res$padj),]
+sig<-rownames(res[(abs(res$log2FoldChange) >= LFC_THRESHOLD) & (res$padj < P_THRESHOLD) & !is.na(res$padj),]) # Extract "significant" results
+
+res2<-res
+res2<-merge(res2, counts(dds, normalized=TRUE), by="row.names") # Add norm. counts
+rownames(res2)<-res2$Row.names
+res2$Row.names<-NULL
+
+res2<-merge(res2, counts(dds, normalized=FALSE), by="row.names") # Add raw counts
+rownames(res2)<-res2$Row.names
+res2$Row.names<-NULL
+res2$gene_id<-NULL
+res2<-res2[with(res2, order(padj)), ]
+
+colnames(res2)<-gsub(pattern = ".x", replacement = "_normCounts", fixed = T, colnames(res2))
+colnames(res2)<-gsub(pattern = ".y", replacement = "_rawCounts", fixed = T, colnames(res2))
+
+write.table(x = res2, file = "deseq2.csv", sep = "\t", col.names = NA)
+
+####################################################################################################
+# Visualization and other
+pdf(file="deseq2_disperison_plot.pdf")
+  plotDispEsts(cds,main="Dispersion Plot")
+dev.off()
+
+rawcounts<-counts(cds, normalized=FALSE) # Save raw counts
+normcounts<-counts(cds, normalized=TRUE) # Save normalized counts
+log2counts<-log2(normcounts+1) # Save log2 of normalized counts
+
+vsd<-varianceStabilizingTransformation(cds) # Save counts tranformed with variance Stabilizing Transformation
+vstcounts<-assay(vsd)
+
+# Normalization check
+cond_colours<-brewer.pal(length(unique(conds)), "Accent")[as.factor(conds)]
+names(cond_colours)<-conds
+
+pdf(file="deseq2_pre_post_norm_counts.pdf")
+  par(mfrow=c(3,1))
+  barplot(colSums(rawcounts), col=cond_colours, las=2,cex.names=1.3,main="Pre Normalised Counts", ylim=c(0,(max(apply(rawcounts,2,sum)))*1.1))
+  plot(1, type="n", axes=F, xlab="", ylab="")
+  legend("center", levels(unique(conds)), fill=cond_colours[levels(unique(conds))], cex=0.6, horiz=TRUE)
+  barplot(colSums(normcounts), col=cond_colours, las=2, cex.names=1.3, main="Post Normalised Counts", ylim=c(0,(max(apply(normcounts,2,sum)))*1.1))
+dev.off()
+
+# Heatmaps
+library("gplots")
+
+pdf(file="heatmap_raw.pdf")
+  heatmap.2(cor(rawcounts), trace="none", col=hmcol, main="Sample to Sample Correlation (Raw Counts)", RowSideColors=cond_colours, margins=c(9,7))
+dev.off()
+pdf(file="heatmap_log2.pdf")
+  heatmap.2(cor(log2counts), trace="none", col=hmcol, main="Sample to Sample Correlation (Log2)", RowSideColors=cond_colours, margins=c(9,7))
+dev.off()
+pdf(file="heatmap_vst.pdf")
+  heatmap.2(cor(vstcounts), trace="none", col=hmcol, main="Sample to Sample Correlation (VST)", RowSideColors=cond_colours, margins=c(9,7))
+dev.off()
+
+vstcounts<-vstcounts[apply(vstcounts, 1, max) != 0,]
+pca<-princomp(vstcounts)
+
+pdf(file="sample_to_samples_PCA.pdf")
+  par(mfrow=c(1,1), xpd=NA) # http://stackoverflow.com/questions/12402319/centring-legend-below-two-plots-in-r
+  plot(pca$loadings, col=cond_colours,  pch=19, cex=2, main="Sample to Sample PCA (VST)")
+  text(pca$loadings, as.vector(colnames(mrcounts)), pos=3)
+  legend("topright", levels(unique(conds)), fill=cond_colours[levels(unique(conds))], cex=1)
+dev.off()
+
+pca2<-prcomp(t(vstcounts),scale=TRUE,center=TRUE)
+
+pdf(file="contributions_PCA.pdf")
+  plot(pca2, type = "l", main="Principal Component Contributions")
+dev.off()
+
+pdf(file="samples_to_sample2_PCA.pdf")
+  par(mfrow=c(1,3), oma=c(2,0,0,0), xpd=NA) # http://stackoverflow.com/questions/12402319/centring-legend-below-two-plots-in-r
+  plot(pca2$x, col=cond_colours,  pch=19, cex=2, main="Sample to Sample PCA (VST)")
+  text(pca2$x, as.vector(colnames(mrcounts)), pos=3, cex=1)
+  plot(pca2$x[,1],pca2$x[,3], col=cond_colours,  pch=19, cex=2, main="Sample to Sample PCA (VST)",ylab="PC3",xlab="PC1")
+  text(pca2$x[,1],pca2$x[,3], as.vector(colnames(mrcounts)), pos=3, cex=1)
+  plot(pca2$x[,2],pca2$x[,3], col=cond_colours,  pch=19, cex=2, main="Sample to Sample PCA (VST)",ylab="PC3",xlab="PC2")
+  text(pca2$x[,2],pca2$x[,3], as.vector(colnames(mrcounts)), pos=3, cex=1)
+  legend(-75,-38, levels(conds), fill=cond_colours[levels(conds)], cex=1) 
+dev.off()
+
+library("rgl")
+
+plot3d(pca$loadings, col=cond_colours,  pch=19, size=20, main="Sample to Sample PCA (VST)")
+rgl.postscript("samples_to_sample_3D_PCA.pdf", "pdf")
+
+# Quick check of DE genes
+tmpMatrix<-matrix(ncol=1, nrow=5)
+rownames(tmpMatrix)<-c("total genes", paste("LFC >= ", round(LFC_THRESHOLD, 2), " (up)", sep=""), paste("LFC <= ", -(round(LFC_THRESHOLD, 2)), " (down)", sep=""), "not de", "low counts")
+tmpMatrix[1,1]<-nrow(res2)
+tmpMatrix[2,1]<-nrow(res2[res2$log2FoldChange >= (LFC_THRESHOLD) & (res2$padj < P_THRESHOLD) & !is.na(res2$padj),])
+tmpMatrix[3,1]<-nrow(res2[(res2$log2FoldChange <= (-LFC_THRESHOLD)) & (res2$padj < P_THRESHOLD) & !is.na(res2$padj),])
+tmpMatrix[4,1]<-nrow(res2[((res2$padj >= P_THRESHOLD) | ((res2$log2FoldChange > (-LFC_THRESHOLD)) & (res2$log2FoldChange < (LFC_THRESHOLD)))) & !is.na(res2$padj),])
+tmpMatrix[5,1]<-sum(is.na(res2$padj))
+tmpMatrix[,1]<-paste(": ", tmpMatrix[,1], ", ",round(tmpMatrix[,1]/((tmpMatrix[1,1]/100)), 1), "%", sep="")
+
+sink("deseq2_de_genes_check.txt")
+  print(paste("Number of DE Genes With adj.pval < ", P_THRESHOLD, " Without LogFC Cut-off", sep=""))
+  summary(res, alpha=P_THRESHOLD)
+  print(paste("Number of DE Genes With adj.pval < ", P_THRESHOLD, " and LogFC >= ", round(LFC_THRESHOLD, 2), sep=""))
+  noquote(tmpMatrix)
+sink()
+
+####################################################################################################
+#
+TOP_BCKP<-TOP
+  
+if(length(sig)<TOP){ # Avoid error by ploting more TOP genes than significantly DE genes
+   TOP<-length(sig)
+}
+  
+pdf(file=paste("volcanoplot_", levels(conds)[1], "_v_", levels(conds)[2],".pdf", sep=""))
+    par(mfrow=c(1,1), xpd=NA) # http://stackoverflow.com/questions/12402319/centring-legend-below-two-plots-in-r
+    plot(res$log2FoldChange, -log(res$padj, 10), main=paste("Volcanoplot ",levels(conds)[2], " v ", levels(conds)[1], " top ", TOP, " genes", sep=""), cex=0.4, pch=19)
+    #   text(res[1:length(sig),]$log2FoldChange, -log(res[1:length(sig),]$padj,10), 
+    #        labels=parsedEnsembl[parsedEnsembl$gene_id %in% rownames(res[1:length(sig),]), "gene_name"], cex=0.3, pos=3)
+    text(res[1:TOP,]$log2FoldChange, -log(res[1:TOP,]$padj,10),
+         labels=parsedEnsembl[rownames(res)[1:TOP], "gene_name"], cex=0.3, pos=3)
+    legend("bottomleft", levels(conds)[1], cex=0.5)
+    legend("bottomright", levels(conds)[2], cex=0.5)
+    abline(h=-log(P_THRESHOLD, 10), col="red", lty=2)
+    abline(v=c(-LFC_THRESHOLD, LFC_THRESHOLD), col="darkblue", lty=2)
+dev.off()
+ 
+TOP<-TOP_BCKP
+
+# Heatmaps of selected genes
+library("pheatmap")
+
+res_tmp<-res[order(res$padj, -abs(res$log2FoldChange), -(res$baseMean)),]
+select<-rownames(res_tmp[(abs(res_tmp$log2FoldChange) >= LFC_THRESHOLD) & (res_tmp$padj < P_THRESHOLD) & !is.na(res_tmp$padj),])
+
+if(length(select)>TOP){
+  select<-select[1:TOP]
+}
+
+nt<-normTransform(dds) # defaults to log2(x+1)
+# nt<-rlog(dds, blind=FALSE)
+# nt<-varianceStabilizingTransformation(dds, blind=FALSE)
+log2.norm.counts<-assay(nt)[select,]
+log2.norm.counts<-log2.norm.counts[order(rowMeans(log2.norm.counts)),]
+
+df<-as.data.frame(colData(dds)[,c("condition","patient")])
+
+TOP_BCKP<-TOP
+
+if(TOP>length(select)){
+  TOP<-length(select)
+}
+
+pdf(file="deseq2_heatmaps_selected_orderBaseMeanCluster.pdf")
+  pheatmap(log2.norm.counts, cluster_rows=TRUE, show_rownames=TRUE, cluster_cols=TRUE, annotation_col=df, 
+           main = paste("Top ", TOP, " significantly DE genes (log2norm)", sep=""))
+dev.off()
+
+pdf(file="deseq2_heatmaps_selected_orderBaseMean.pdf")
+  pheatmap(log2.norm.counts, cluster_rows=FALSE, show_rownames=TRUE,
+           cluster_cols=FALSE, annotation_col=df, main = paste("Top ", TOP, " significantly DE genes (log2norm)", sep=""))
+dev.off()
+
+TOP<-TOP_BCKP
+
+graphics.off()
+
+system("for i in deseq2_heatmaps_selected_*; do pdftk $i cat 2-end output tmp.pdf; mv tmp.pdf $i; done") # Cut first empty page from heatmap plot
 
 
 
