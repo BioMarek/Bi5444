@@ -260,10 +260,10 @@ setwd(OUTPUT_DIR)
 # Processing
 mrcounts<-read.table(INPUT_COUNTS, header=TRUE, row.names=1)
 
-mrcounts<-mrcounts[,c("X1PRE_s0_L001", "X2PRE_s0_L001", "X3PRE_s0_L001", "X5PRE_s0_L001", "X6PRE_s0_L001", "X7PRE_s0_L001", "X9PRE_s0_L001", 
-                        "X1D15_s1_L001", "X2D15_s1_L001", "X3D15_s1_L001", "X5W12_s1_L001", "X6W5_s1_L001", "X7W5_s1_L001", "X9D15_s1_L001")] # Select and reorder columns, in R we read tables table[rows,columns], so if I want to see first column: table [,1]
+# if we need to reorder the column order we use following line
+# mrcounts<-mrcounts[,c("header_column_4", "header_column_2", "header_column_1", "header_column_3")] # Select and reorder columns, in R we read tables table[rows,columns], so if I want to see first column: table [,1]
 
-conds<-factor(c(rep("pre", 7), rep("post", 7)), levels=c("pre", "post")) # Set conditions and make sure they are in correct order, factor-in R define levels
+conds<-factor(c(rep("control", 5), rep("patient", 6)), levels=c("control", "patient")) # Set conditions and make sure they are in correct order, factor-in R define levels
 
 mrcounts<-mrcounts[rowSums(mrcounts)!=0,] # Remove not expressed genes in any sample
 
