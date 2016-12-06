@@ -244,8 +244,8 @@ biocLite("DESeq2")
 
 ####################################################################################################
 # General variables
-INPUT_COUNTS<-"$SCRATCH/All_plain_counts.counts" 
-OUTPUT_DIR<-"$SCRATCH/results/"
+INPUT_COUNTS<-"/storage/brno2/home/indrakovaa/Bi5444/All_plain_counts.counts" 
+OUTPUT_DIR<-"/storage/brno2/home/indrakovaa/Bi5444/Mirna_results/"
 
 ####################################################################################################
 # Custom variables
