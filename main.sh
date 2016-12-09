@@ -19,7 +19,7 @@ qsub -l walltime=2h -l mem=4gb -l scratch=40gb -l nodes=1:ppn=4
 #
 # Don't forget dos2unix if working on windows
 # Results from each step of analysis will be in separate directory.
-PROJECT_DIR = /storage/brno2/home/marek_bfu/Bi5444 # (☞ﾟヮﾟ)☞ change to your favorite storage ☜(ﾟヮﾟ☜)
+PROJECT_DIR=/storage/brno2/home/marek_bfu/Bi5444 # (☞ﾟヮﾟ)☞ change to your favorite storage ☜(ﾟヮﾟ☜)
 mkdir -p $PROJECT_DIR/raw_sequences
 cd $PROJECT_DIR/raw_sequences
 
