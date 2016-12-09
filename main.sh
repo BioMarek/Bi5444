@@ -104,18 +104,21 @@ cd $PROJECT_DIR # List of possible adapters is stored in study materials
 wget https://is.muni.cz/el/1431/podzim2016/Bi5444/um/65638858/adapters_merge.txt
 ADAPTERS=$PROJECT_DIR/adapters_merge.txt
 
+wget http://wwwdev.ebi.ac.uk/enright-dev/kraken/reaper/src/reaper-15-065.tgz # downloading and instalation of minion nad swan
+tar zxvf reaper-15-065.tgz
+cd reaper-15-065/src
+make
+
+
 mkdir -p $OUTPUT_DIR # Make output directory with including all directories (up and down)
-
 cd $DATASET_DIR # Go to the input folder
-
-### TODO downloading and compilation of swan and minion automated
 
 # Start minion and swan
 for i in *
 do	
 	# I used absoulte paths to folder where I compiled swan and minion.
-	/storage/brno2/home/marek_bfu/reaper-15-065/src/minion search-adapter -i $i -show 5 -write-fasta $OUTPUT_DIR/${i%.*}.minion.fasta # Identify top 5 over-represented sequences
-	/storage/brno2/home/marek_bfu/reaper-15-065/src/swan -r $ADAPTERS -q $OUTPUT_DIR/${i%.*}.minion.fasta > $OUTPUT_DIR/${i%.*}.minion.compare # Compare them with list of adapters
+	$PROJECT_DIR/reaper-15-065/src/minion search-adapter -i $i -show 5 -write-fasta $OUTPUT_DIR/${i%.*}.minion.fasta # Identify top 5 over-represented sequences
+	$PROJECT_DIR/reaper-15-065/src/swan -r $ADAPTERS -q $OUTPUT_DIR/${i%.*}.minion.fasta > $OUTPUT_DIR/${i%.*}.minion.compare # Compare them with list of adapters
 done
 
 
