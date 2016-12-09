@@ -9,22 +9,21 @@
 
 
 # Request for machine. This is just temporary, maybe we will need to change settings later.
-qsub -l walltime=2h -l mem=4gb -l scratch=40gb -l nodes=1:ppn=4
+#qsub -l walltime=2h -l mem=4gb -l scratch=40gb -l nodes=1:ppn=4
 
 
 ##########################################################################
 #                       DOWNLOADING SCRIPT                               #
 ##########################################################################
+
 #!/bin/bash
 #
-# Don't forget dos2unix if working on windows
 # Results from each step of analysis will be in separate directory.
 PROJECT_DIR=/storage/brno2/home/marek_bfu/Bi5444 # (☞ﾟヮﾟ)☞ change to your favorite storage ☜(ﾟヮﾟ☜)
 mkdir -p $PROJECT_DIR/raw_sequences
 cd $PROJECT_DIR/raw_sequences
 
 # Because the files have random names we cannot use for loop. ¯\_(ツ)_/¯ Once each file is downloaded it is renamed to avoid confusion.
-# I'm going to download them into my storage, then rename them and only after that copy them to  $scratch and work with them.
 wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR852/ERR852089/ERR852089.fastq.gz
 mv ERR852089.fastq.gz control_1.fastq.gz
 wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR852/ERR852099/ERR852099.fastq.gz
@@ -54,10 +53,7 @@ mv ERR852098.fastq.gz patient_6.fastq.gz
 #                    FASTQC BEFORE TRIMMING SCRIPT                       #
 ##########################################################################
 
-#!/bin/bash
-#
 # for loop copying everything to $SCRATCH and unpacking
-# on metacentrum fasqc refuses to take *.gz file as input so that's the reason I'm unpacking it.
 cd $PROJECT_DIR
 mkdir fastqc_before_trim
 cd $PROJECT_DIR/raw_sequences
@@ -66,7 +62,6 @@ for file in *
 do
   echo copying "$file" # just to know where we are
   cp $file $SCRATCH/$file
-  #gunzip $file
 done
 
 cd $SCRATCH
@@ -76,7 +71,7 @@ do
   fastqc $file
 done
 
-mv *.zip $PROJECT_DIR/fastqc_before_trim/ # don't forget to copy file to your computer
+mv *.zip $PROJECT_DIR/fastqc_before_trim/
 
 
 ##########################################################################
@@ -85,9 +80,6 @@ mv *.zip $PROJECT_DIR/fastqc_before_trim/ # don't forget to copy file to your co
 
 ### TODO do it in scratch and check whether it works
 
-
-#!/bin/bash
-#
 # Simple script for minion adapter search
 # within the folder  (DATASET_DIR) it takes all files with
 # specified suffix (SUFFIX) and looks for the adapters and compares
@@ -100,25 +92,28 @@ mv *.zip $PROJECT_DIR/fastqc_before_trim/ # don't forget to copy file to your co
 DATASET_DIR=$PROJECT_DIR/raw_sequences
 OUTPUT_DIR=$PROJECT_DIR/minion
 
-cd $PROJECT_DIR # List of possible adapters is stored in study materials 
+# Downloading of adapters, list of possible adapters is stored in study materials
+cd $PROJECT_DIR 
 wget https://is.muni.cz/el/1431/podzim2016/Bi5444/um/65638858/adapters_merge.txt
 ADAPTERS=$PROJECT_DIR/adapters_merge.txt
 
-wget http://wwwdev.ebi.ac.uk/enright-dev/kraken/reaper/src/reaper-15-065.tgz # downloading and instalation of minion nad swan
+# Downloading and instalation of minion nad swan
+wget http://wwwdev.ebi.ac.uk/enright-dev/kraken/reaper/src/reaper-15-065.tgz 
 tar zxvf reaper-15-065.tgz
 cd reaper-15-065/src
 make
 
+# Make output directory with including all directories (up and down)
+mkdir -p $OUTPUT_DIR 
+cd $DATASET_DIR
 
-mkdir -p $OUTPUT_DIR # Make output directory with including all directories (up and down)
-cd $DATASET_DIR # Go to the input folder
-
-# Start minion and swan
+# Start minion and swan. I used absoulte paths to folder where I compiled swan and minion.
 for i in *
 do	
-	# I used absoulte paths to folder where I compiled swan and minion.
-	$PROJECT_DIR/reaper-15-065/src/minion search-adapter -i $i -show 5 -write-fasta $OUTPUT_DIR/${i%.*}.minion.fasta # Identify top 5 over-represented sequences
-	$PROJECT_DIR/reaper-15-065/src/swan -r $ADAPTERS -q $OUTPUT_DIR/${i%.*}.minion.fasta > $OUTPUT_DIR/${i%.*}.minion.compare # Compare them with list of adapters
+	# Identify top 5 over-represented sequences
+	$PROJECT_DIR/reaper-15-065/src/minion search-adapter -i $i -show 5 -write-fasta $OUTPUT_DIR/${i%.*}.minion.fasta
+	# Compare them with list of adapters
+	$PROJECT_DIR/reaper-15-065/src/swan -r $ADAPTERS -q $OUTPUT_DIR/${i%.*}.minion.fasta > $OUTPUT_DIR/${i%.*}.minion.compare 
 done
 
 
@@ -132,7 +127,7 @@ done
 ##########################################################################
 
 #!/bin/bash
-
+#
 ###################################################################################################
 ###INFORMATION ABOUT THE SCRIPT###
 # Pre-processing script designed for microRNAs analysis using Cutadapt (http://cutadapt.readthedocs.io/en/stable/index.html) and Fastx-toolkit (http://hannonlab.cshl.edu/fastx_toolkit/)
