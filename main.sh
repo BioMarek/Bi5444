@@ -97,12 +97,12 @@ mv *.zip $PROJECT_DIR/fastqc_before_trim/ # don't forget to copy file to your co
 #
 
 # Set variables - input folder, output folder and suffix of files to check
-DATASET_DIR=$PROJECT/raw_sequences
-OUTPUT_DIR=$PROJECT/minion
+DATASET_DIR=$PROJECT_DIR/raw_sequences
+OUTPUT_DIR=$PROJECT_DIR/minion
 
-cd $PROJECT # List of possible adapters is stored in study materials 
-wget https://is.muni.cz/auth/el/1431/podzim2016/Bi5444/um/65638858/adapters_merge.txt?studium=694611
-ADAPTERS=$PROJECT/adapters_merge.txt
+cd $PROJECT_DIR # List of possible adapters is stored in study materials 
+wget https://is.muni.cz/el/1431/podzim2016/Bi5444/um/65638858/adapters_merge.txt
+ADAPTERS=$PROJECT_DIR/adapters_merge.txt
 
 mkdir -p $OUTPUT_DIR # Make output directory with including all directories (up and down)
 
