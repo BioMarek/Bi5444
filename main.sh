@@ -1,8 +1,6 @@
 
 
 ##########################################################################
-#   I have started already, feel free to improve any part of the code.   #
-##########################################################################
 #                             General idea                               #
 # Download files to storage - only once                                  #
 # Copy files to $SCRATCH and do all the work there                       #
@@ -21,9 +19,9 @@ qsub -l walltime=2h -l mem=4gb -l scratch=40gb -l nodes=1:ppn=4
 #
 # Don't forget dos2unix if working on windows
 # Results from each step of analysis will be in separate directory.
-cd /storage/brno2/home/marek_bfu # (☞ﾟヮﾟ)☞ change to your favorite storage ☜(ﾟヮﾟ☜)
-mkdir -p Bi5444/raw_sequences
-cd Bi5444/raw_sequences
+PROJECT_DIR = /storage/brno2/home/marek_bfu/Bi5444 # (☞ﾟヮﾟ)☞ change to your favorite storage ☜(ﾟヮﾟ☜)
+mkdir -p $PROJECT_DIR/raw_sequences
+cd $PROJECT_DIR/raw_sequences
 
 # Because the files have random names we cannot use for loop. ¯\_(ツ)_/¯ Once each file is downloaded it is renamed to avoid confusion.
 # I'm going to download them into my storage, then rename them and only after that copy them to  $scratch and work with them.
@@ -60,15 +58,15 @@ mv ERR852098.fastq.gz patient_6.fastq.gz
 #
 # for loop copying everything to $SCRATCH and unpacking
 # on metacentrum fasqc refuses to take *.gz file as input so that's the reason I'm unpacking it.
-cd /storage/brno2/home/marek_bfu/Bi5444 # (☞ﾟヮﾟ)☞ change to your favorite storage ☜(ﾟヮﾟ☜)
+cd $PROJECT_DIR
 mkdir fastqc_before_trim
-cd /storage/brno2/home/marek_bfu/Bi5444/raw_sequences
+cd $PROJECT_DIR/raw_sequences
 
 for file in *
 do
   echo copying "$file" # just to know where we are
   cp $file $SCRATCH/$file
-  gunzip $file
+  #gunzip $file
 done
 
 cd $SCRATCH
@@ -77,14 +75,16 @@ for file in *
 do
   fastqc $file
 done
-mv *.zip /storage/brno2/home/marek_bfu/Bi5444/fastqc_before_trim/ # don't forget to copy file to your computer
 
-rm -rf $SCRATCH/*
+mv *.zip $PROJECT_DIR/fastqc_before_trim/ # don't forget to copy file to your computer
 
 
 ##########################################################################
 #                            ADAPTER SEARCHING                           #
 ##########################################################################
+
+### TODO do it in scratch and check whether it works
+
 
 #!/bin/bash
 #
@@ -97,14 +97,18 @@ rm -rf $SCRATCH/*
 #
 
 # Set variables - input folder, output folder and suffix of files to check
-DATASET_DIR=/storage/brno2/home/marek_bfu/Bi5444/raw_sequences
-OUTPUT_DIR=/storage/brno2/home/marek_bfu/Bi5444/minion
+DATASET_DIR=$PROJECT/raw_sequences
+OUTPUT_DIR=$PROJECT/minion
 
-ADAPTERS=/storage/brno2/home/marek_bfu/adapters_merge.txt # List of possible adapters
+cd $PROJECT # List of possible adapters is stored in study materials 
+wget https://is.muni.cz/auth/el/1431/podzim2016/Bi5444/um/65638858/adapters_merge.txt?studium=694611
+ADAPTERS=$PROJECT/adapters_merge.txt
 
 mkdir -p $OUTPUT_DIR # Make output directory with including all directories (up and down)
 
 cd $DATASET_DIR # Go to the input folder
+
+### TODO downloading and compilation of swan and minion automated
 
 # Start minion and swan
 for i in *
@@ -115,10 +119,9 @@ do
 done
 
 
-
-
-
-
+###################################################################################################
+# Check result from swan and minion by eye, if everything is OK you can procedd to the next step.
+###################################################################################################
 
 
 ##########################################################################
