@@ -155,8 +155,9 @@ QUALITY=33 # Phred coding of input files
 ##CUTADAPT VARIABLES#
 QT_THRESHOLD=5 # Threshold for quality trimming; we filter by number of mismatches so we need high quality reads
 
-DISC_SHORT=14 # Discard too short sequences after the pre-processing
-DISC_LONG=30 # Discard too long after the pre-processing
+#selecting sequences that have lenght of miRNAs 
+DISC_SHORT=15 # Discard too short sequences after the pre-processing
+DISC_LONG=26 # Discard too long after the pre-processing
 
 
 
