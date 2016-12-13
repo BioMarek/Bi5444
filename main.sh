@@ -203,6 +203,18 @@ done
 
 
 ##########################################################################
+#                                CHIMIRA                                 #
+##########################################################################
+
+# chimira is web based tool for analysis of miRNA
+# to start analysis go here: http://www.ebi.ac.uk/research/enright/software/chimira
+# for paper go here: http://bioinformatics.oxfordjournals.org/content/early/2015/08/14/bioinformatics.btv380.abstract
+#
+# sequences are mapped against miRBase using BLASTn
+# output is table containg name of miRNA and number indicating how many times it was mapped
+
+
+##########################################################################
 #                       	DESeq2 analysis                          #
 ##########################################################################
 ## DESeq2 is an R package, so it is necessarry to work in R, either in Metacentrum (described bellow) or install R and RStudio at home computer##
