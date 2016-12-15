@@ -61,10 +61,11 @@ cd $PROJECT_DIR/raw_sequences
 
 for file in *
 do
-  echo copying "$file" # tells us wich file is being processed, just to know where we are
+  echo copying "$file" # tells us wich file is being copied, just to know where we are
   cp $file $SCRATCH/$file
 done
 
+# FastQC analysis
 cd $SCRATCH
 module add fastQC-0.10.1
 for file in *
