@@ -18,12 +18,13 @@
 
 #!/bin/bash
 #
-# Results from each step of analysis will be in separate directory.
-PROJECT_DIR=/storage/brno2/home/marek_bfu/Bi5444 # (☞ﾟヮﾟ)☞ change to your favorite storage ☜(ﾟヮﾟ☜)
+# Following code creates directory structure containing input data and results from different steps of analysis. 
+# Change PROJECT_DIR variabl to your favorite storage.
+PROJECT_DIR=/storage/brno2/home/marek_bfu/Bi5444
 mkdir -p $PROJECT_DIR/raw_sequences
 cd $PROJECT_DIR/raw_sequences
 
-# Because the files have random names we cannot use for loop. ¯\_(ツ)_/¯ Once each file is downloaded it is renamed to avoid confusion.
+# Because the files have random names we cannot use for loop. Once each file is downloaded it is renamed to avoid confusion.
 wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR852/ERR852089/ERR852089.fastq.gz
 mv ERR852089.fastq.gz control_1.fastq.gz
 wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR852/ERR852099/ERR852099.fastq.gz
@@ -53,14 +54,14 @@ mv ERR852098.fastq.gz patient_6.fastq.gz
 #                    FASTQC BEFORE TRIMMING SCRIPT                       #
 ##########################################################################
 
-# for loop copying everything to $SCRATCH and unpacking
+# for loop copying everything to $SCRATCH
 cd $PROJECT_DIR
 mkdir fastqc_before_trim
 cd $PROJECT_DIR/raw_sequences
 
 for file in *
 do
-  echo copying "$file" # just to know where we are
+  echo copying "$file" # tells us wich file is being processed, just to know where we are
   cp $file $SCRATCH/$file
 done
 
@@ -71,7 +72,7 @@ do
   fastqc $file
 done
 
-mv *.zip $PROJECT_DIR/fastqc_before_trim/
+mv *.zip $PROJECT_DIR/fastqc_before_trim/ # copies results to our storage directory
 
 
 ##########################################################################
