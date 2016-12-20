@@ -65,7 +65,7 @@ cd $PROJECT_DIR/raw_sequences
 
 for file in *
 do
-  echo copying "$file" # tells us wich file is being copied, just to know where we are
+  echo copying "$file" # tells us which file is being copied, just to know where we are
   cp $file $SCRATCH/$file
 done
 
@@ -148,8 +148,8 @@ done
 ###################################################################################################
 ##SPECIFY DATA VARIABLES###
 INPUT_SUFFIX=".fastq.gz" # Suffix of files to launch the analysis on
-DATASET_DIR=/storage/brno2/home/marek_bfu/Bi5444/raw_sequences #path to input raw sequences
-OUTPUT_DIR=/storage/brno2/home/marek_bfu/Bi5444/trimming #path to output seqquences
+DATASET_DIR=$PROJECT_DIRraw_sequences #path to input raw sequences
+OUTPUT_DIR=$PROJECT_DIRtrimming #path to output seqquences
 
 FILE_FORMAT=fastq # File format
 QUALITY=33 # Phred coding of input files
