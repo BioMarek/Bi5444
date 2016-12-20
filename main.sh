@@ -18,8 +18,9 @@
 
 #!/bin/bash
 #
-# Following code creates directory structure containing input data and results from different steps of analysis. 
-# Change PROJECT_DIR variabl to your favorite storage.
+# Following script creates directory structure to store input data and results from different steps of analysis. 
+# Then it downloads sequencing data.
+# Change PROJECT_DIR variable to your favorite storage. Results from further analysis steps will be stored here.
 PROJECT_DIR=/storage/brno2/home/marek_bfu/Bi5444
 mkdir -p $PROJECT_DIR/raw_sequences
 cd $PROJECT_DIR/raw_sequences
@@ -54,6 +55,9 @@ mv ERR852098.fastq.gz patient_6.fastq.gz
 #                    FASTQC BEFORE TRIMMING SCRIPT                       #
 ##########################################################################
 
+#!/bin/bash
+#
+# Following script performs quality check using FastQC.
 # for loop copying everything to $SCRATCH
 cd $PROJECT_DIR
 mkdir fastqc_before_trim
@@ -120,7 +124,7 @@ done
 
 
 ###################################################################################################
-# Check result from swan and minion by eye, if everything is OK you can procedd to the next step.
+# Check result from swan and minion by eye, if everything is OK you can proceed to the next step. #
 ###################################################################################################
 
 
