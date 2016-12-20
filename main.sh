@@ -148,8 +148,8 @@ done
 ###################################################################################################
 ##SPECIFY DATA VARIABLES###
 INPUT_SUFFIX=".fastq.gz" # Suffix of files to launch the analysis on
-DATASET_DIR=$PROJECT_DIRraw_sequences #path to input raw sequences
-OUTPUT_DIR=$PROJECT_DIRtrimming #path to output seqquences
+DATASET_DIR=$PROJECT_DIR/raw_sequences #path to input raw sequences
+OUTPUT_DIR=$PROJECT_DIR/trimming #path to output seqquences
 
 FILE_FORMAT=fastq # File format
 QUALITY=33 # Phred coding of input files
