@@ -494,8 +494,15 @@ system("for i in deseq2_heatmaps_selected_*; do pdftk $i cat 2-end output tmp.pd
 
 
 
+####################################################################################################
+####################################################################################################
+R-analysis on windows
 
-
+# R considers \ as escape character hence we need to use two of them
+INPUT_COUNTS<-"e:\\Marek\\Bi5444_R_analysis\\All_plain_counts.counts" 
+OUTPUT_DIR<-"e:\\Marek\\Bi5444_R_analysis\\Mirna_results"
+####################################################################################################
+####################################################################################################
 
 # cleaning $SCRATCH
 rm -r $SCRATCH/*
