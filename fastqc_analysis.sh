@@ -2,6 +2,7 @@
 #
 # Following script performs quality check using FastQC.
 # for loop copying everything to $SCRATCH
+PROJECT_DIR=/storage/brno2/home/marek_bfu/Bi5444
 cd $PROJECT_DIR
 mkdir fastqc_before_trim
 cd $PROJECT_DIR/raw_sequences
