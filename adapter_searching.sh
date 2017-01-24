@@ -10,6 +10,7 @@
 #! /bin/bash
 #
 # Set variables - input folder, output folder and suffix of files to check
+PROJECT_DIR=/storage/brno2/home/marek_bfu/Bi5444
 DATASET_DIR=$PROJECT_DIR/raw_sequences
 OUTPUT_DIR=$PROJECT_DIR/minion
 
