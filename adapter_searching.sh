@@ -13,9 +13,9 @@ DATASET_DIR=$PROJECT_DIR/raw_sequences
 OUTPUT_DIR=$PROJECT_DIR/minion
 
 # Downloading of adapters, list of possible adapters is stored in study materials
-cd $PROJECT_DIR 
+cd $SCRATCH
 wget https://is.muni.cz/el/1431/podzim2016/Bi5444/um/65638858/adapters_merge.txt
-ADAPTERS=$PROJECT_DIR/adapters_merge.txt
+ADAPTERS=$SCRATCH/adapters_merge.txt
 
 # Downloading and instalation of minion nad swan
 wget http://wwwdev.ebi.ac.uk/enright-dev/kraken/reaper/src/reaper-15-065.tgz 
@@ -31,7 +31,7 @@ cd $DATASET_DIR
 for i in *
 do	
 	# Identify top 5 over-represented sequences
-	$PROJECT_DIR/reaper-15-065/src/minion search-adapter -i $i -show 5 -write-fasta $OUTPUT_DIR/${i%.*}.minion.fasta
+	$SCRATCH/reaper-15-065/src/minion search-adapter -i $i -show 5 -write-fasta $OUTPUT_DIR/${i%.*}.minion.fasta
 	# Compare them with list of adapters
-	$PROJECT_DIR/reaper-15-065/src/swan -r $ADAPTERS -q $OUTPUT_DIR/${i%.*}.minion.fasta > $OUTPUT_DIR/${i%.*}.minion.compare 
+	$SCRATCH/reaper-15-065/src/swan -r $ADAPTERS -q $OUTPUT_DIR/${i%.*}.minion.fasta > $OUTPUT_DIR/${i%.*}.minion.compare 
 done
