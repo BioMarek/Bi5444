@@ -7,7 +7,8 @@
 # Minion can also take .gz input files as itself
 # Minion and Swan are part of the Kraken pipeline http://www.ebi.ac.uk/research/enright/software/kraken
 #
-
+#! /bin/bash
+#
 # Set variables - input folder, output folder and suffix of files to check
 DATASET_DIR=$PROJECT_DIR/raw_sequences
 OUTPUT_DIR=$PROJECT_DIR/minion
