@@ -13,6 +13,7 @@
 
 ###################################################################################################
 ##SPECIFY DATA VARIABLES###
+PROJECT_DIR=/storage/brno2/home/marek_bfu/Bi5444
 INPUT_SUFFIX=".fastq.gz" # Suffix of files to launch the analysis on
 DATASET_DIR=$PROJECT_DIR/raw_sequences #path to input raw sequences
 OUTPUT_DIR=$PROJECT_DIR/trimming #path to output seqquences
