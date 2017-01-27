@@ -44,7 +44,8 @@ QF_PERC=85 # Minimal percentage of bases with $QF_THRESHOLD
 
 #add Cudadapt module
 module add python27-modules-gcc  
-module add python27-modules-intel
+module add python27-modules-intel\
+#add FastX toolkit
 module add fastx-0.0.13 
 
 ###################################################################################################
