@@ -50,7 +50,8 @@ mv ERR852094.fastq.gz patient_5.fastq.gz
 wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR852/ERR852098/ERR852098.fastq.gz
 mv ERR852098.fastq.gz patient_6.fastq.gz
 
-
+# to check, how manz reads we have in each date file>
+# wc -l $datafile | awk '{print $1/4}'
 ##########################################################################
 #                    FASTQC BEFORE TRIMMING SCRIPT                       #
 ##########################################################################
@@ -84,7 +85,7 @@ mv *.zip $PROJECT_DIR/fastqc_before_trim/ # copies results to our storage direct
 #                            ADAPTER SEARCHING                           #
 ##########################################################################
 
-### TODO do it in scratch and check whether it works
+#!/bin/bash
 
 # Simple script for minion adapter search
 # within the folder  (DATASET_DIR) it takes all files with
