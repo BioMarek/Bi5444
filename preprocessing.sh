@@ -2,10 +2,12 @@
 #
 ###################################################################################################
 ###INFORMATION ABOUT THE SCRIPT###
-# Pre-processing script designed for microRNAs analysis using Cutadapt (http://cutadapt.readthedocs.io/en/stable/index.html) and Fastx-toolkit (http://hannonlab.cshl.edu/fastx_toolkit/)
-# It is focused for later use of Chimira (http://www.ebi.ac.uk/research/enright/software/chimira) and DESeq2 (https://bioconductor.org/packages/release/bioc/html/DESeq2.html) later on
+# Pre-processing script designed for microRNAs analysis using Cutadapt (http://cutadapt.readthedocs.io/en/stable/index.html) 
+# and Fastx-toolkit (http://hannonlab.cshl.edu/fastx_toolkit/)
+# It is focused for later use of Chimira (http://www.ebi.ac.uk/research/enright/software/chimira) 
+# and DESeq2 (https://bioconductor.org/packages/release/bioc/html/DESeq2.html) later on
 #
-# The script does following stepts in order to preprocess data for mapping
+# The script does following steps in order to preprocess data for mapping
 # 1) Adapter trimming
 # 2) Quality trimming
 # 3) Size filtering
@@ -16,7 +18,7 @@
 PROJECT_DIR=/storage/brno2/home/marek_bfu/Bi5444
 INPUT_SUFFIX=".fastq.gz" # Suffix of files to launch the analysis on
 DATASET_DIR=$PROJECT_DIR/raw_sequences #path to input raw sequences
-OUTPUT_DIR=$PROJECT_DIR/trimming #path to output seqquences
+OUTPUT_DIR=$PROJECT_DIR/trimming #path to output sequences
 
 FILE_FORMAT=fastq # File format
 QUALITY=33 # Phred coding of input files
@@ -43,10 +45,6 @@ QF_PERC=85 # Minimal percentage of bases with $QF_THRESHOLD
 #add Cudadapt module
 module add python27-modules-gcc  
 module add python27-modules-intel
-
-####################################################################################################
-# Script to calculate differential gene expression using DESeq2 and edgeR package
-# Designed for miRNA differential gene expression analysis based on miRBase results#add FastX toolkit
 module add fastx-0.0.13 
 
 ###################################################################################################
