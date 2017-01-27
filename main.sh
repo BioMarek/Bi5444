@@ -220,7 +220,9 @@ done
 # sequences are mapped against miRBase using BLASTn
 # output is table containg name of miRNA and number indicating how many times it was mapped
 
-
+####################################################################################################
+# Script to calculate differential gene expression using DESeq2 and edgeR package
+# Designed for miRNA differential gene expression analysis based on miRBase results
 ##########################################################################
 #                       	DESeq2 analysis                          #
 ##########################################################################
