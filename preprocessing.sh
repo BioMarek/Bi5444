@@ -4,7 +4,7 @@
 ###INFORMATION ABOUT THE SCRIPT###
 # Pre-processing script designed for microRNAs analysis using Cutadapt (http://cutadapt.readthedocs.io/en/stable/index.html) 
 # and Fastx-toolkit (http://hannonlab.cshl.edu/fastx_toolkit/)
-# It is focused for later use of Chimira (http://www.ebi.ac.uk/research/enright/software/chimira) 
+# It is focused for later use of Chimira (http://www.ebi.ac.uk/research/enright/software/chimira) (current version: http://wwwdev.ebi.ac.uk/enright-dev/chimira/)
 # and DESeq2 (https://bioconductor.org/packages/release/bioc/html/DESeq2.html) later on
 #
 # The script does following steps in order to preprocess data for mapping
