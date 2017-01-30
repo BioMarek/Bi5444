@@ -4,7 +4,7 @@
 # for loop copying everything to $SCRATCH
 PROJECT_DIR=/storage/brno2/home/marek_bfu/Bi5444
 cd $PROJECT_DIR
-mkdir fastqc_before_trim
+mkdir fastqc_before_trim #creates folder for results of this analysis
 cd $PROJECT_DIR/raw_sequences
 
 for file in *
