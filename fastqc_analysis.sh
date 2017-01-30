@@ -22,3 +22,4 @@ do
 done
 
 mv *.zip $PROJECT_DIR/fastqc_before_trim/ # copies results to our storage directory
+rm -rf *
