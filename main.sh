@@ -756,6 +756,9 @@ dev.off()
 pdf(file="deseq2_heatmaps_selected_orderBaseMean.pdf")
 pheatmap(log2.norm.counts, cluster_rows=FALSE, show_rownames=TRUE,
          cluster_cols=FALSE, annotation_col=df, main = paste("Top ", TOP, " significantly DE genes (log2norm)", sep=""))
+###Opet mi fungovalo toto:
+#heatmap.2(log2.norm.counts, Rowv=FALSE, Colv=FALSE, main = paste("Top ", TOP, " significantly DE genes (log2norm)", sep=""))
+#nemuzu prijit na to, jak zmenit pojmenovani os, ta promnenna df tam nejak nestimuje
 dev.off()
 
 TOP<-TOP_BCKP
