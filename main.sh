@@ -727,8 +727,12 @@ nt<-normTransform(dds) # defaults to log2(x+1)
 # nt<-varianceStabilizingTransformation(dds, blind=FALSE)
 log2.norm.counts<-assay(nt)[select,]
 log2.norm.counts<-log2.norm.counts[order(rowMeans(log2.norm.counts)),]
+########################################################
+########################################################
 
-df<-as.data.frame(colData(dds)[,c("condition","patient")])
+df<-as.data.frame(colData(dds) [,c("condition")]) #it only have one column named condition, so we cannot select two columns, 
+# \one named condition and the other named patient
+# df<-as.data.frame(colData(dds)[,c("condition","patient")])
 
 TOP_BCKP<-TOP
 
@@ -740,6 +744,14 @@ pdf(file="deseq2_heatmaps_selected_orderBaseMeanCluster.pdf")
 pheatmap(log2.norm.counts, cluster_rows=TRUE, show_rownames=TRUE, cluster_cols=TRUE, annotation_col=df, 
          main = paste("Top ", TOP, " significantly DE genes (log2norm)", sep=""))
 dev.off()
+
+
+###Error in check.length("fill") : 
+  #'gpar' element 'fill' must not be length 0
+###Vyresila jsem to heatmap.2
+#heatmap.2(log2.norm.counts, Rowv=TRUE, Colv=TRUE, 
+#         main = paste("Top ", TOP, " significantly DE genes (log2norm)", sep=""), na.color = "Green")
+
 
 pdf(file="deseq2_heatmaps_selected_orderBaseMean.pdf")
 pheatmap(log2.norm.counts, cluster_rows=FALSE, show_rownames=TRUE,
