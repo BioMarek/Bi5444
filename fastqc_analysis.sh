@@ -22,7 +22,7 @@ module add fastQC-0.10.1
 ##############################################################################################################################
 ###SCRIPT BODY###
 # Make output directory with including all directories (up and down)
-mkdir $OUTPUT_DIR
+mkdir -p $OUTPUT_DIR
 cd $PROJECT_DIR/raw_sequences
 
 # for loop copies everything to $SCRATCH
