@@ -17,6 +17,7 @@ PROJECT_DIR=/storage/brno2/home/marek_bfu/Bi5444
 
 ##############################################################################################################################
 ###SCRIPT BODY###
+# Make project directory with including all directories (up and down)
 mkdir -p $PROJECT_DIR/raw_sequences
 cd $PROJECT_DIR/raw_sequences
 
