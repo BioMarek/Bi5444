@@ -252,20 +252,25 @@ TOP_BCKP<-TOP
 if(TOP>length(select)){
   TOP<-length(select)
 }
-
+#specification of the position of the color key (bellow) and the sizes of the graphs
+lmat = rbind(c(0,3),c(2,1),c(0,4))
+lwid = c(1,8)
+lhei = c(1,4,1.5)
 pdf(file="deseq2_heatmaps_selected_orderBaseMeanCluster.pdf")
 
 #pheatmap(log2.norm.counts, cluster_rows=TRUE, show_rownames=TRUE, cluster_cols=TRUE, annotation_col=df, 
  #        main = paste("Top ", TOP, " significantly DE genes (log2norm)", sep=""))
 heatmap.2(log2.norm.counts, Rowv=TRUE, Colv=TRUE, margins=c(5,10),
-         main = paste("Top ", TOP, " significantly DE genes (log2norm)", sep=""), na.color="Green")
+          lmat = lmat, lwid = lwid, lhei = lhei,
+          main = paste("Top ", TOP, " significantly DE genes (log2norm)", sep=""), na.color="Green")
 dev.off()
 
 pdf(file="deseq2_heatmaps_selected_orderBaseMean.pdf")
 #pheatmap(log2.norm.counts, cluster_rows=FALSE, show_rownames=TRUE,
 #         cluster_cols=FALSE, annotation_col=df, main = paste("Top ", TOP, " significantly DE genes (log2norm)", sep=""))
+
 heatmap.2(log2.norm.counts, dendrogram="none", Rowv=FALSE, Colv=FALSE, margins=c(5,10),
-          keysize=0.8, 
+          lmat = lmat, lwid = lwid, lhei = lhei,
           main = paste("Top ", TOP, " significantly DE genes (log2norm)", sep=""))
 dev.off()
 
