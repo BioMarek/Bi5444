@@ -2,8 +2,8 @@
 #
 ##############################################################################################################################
 ###INFORMATION ABOUT THE SCRIPT###
-# Downloading script designed to download miRNA sequencing data from publication Next-generation sequencing reveals novel 
-# differentially regulated mRNAs, lncRNAs, miRNAs, sdRNAs and a piRNA in pancreatic cancer downloadable here: 
+# Downloading script designed to download miRNA sequencing data from publication "Next-generation sequencing reveals novel 
+# differentially regulated mRNAs, lncRNAs, miRNAs, sdRNAs and a piRNA in pancreatic cancer" which can be downloaded here: 
 # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4417536/. 
 #
 # 1) Creating directory structure to store input data and results from different steps of analysis.
