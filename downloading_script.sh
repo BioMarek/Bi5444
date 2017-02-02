@@ -7,8 +7,8 @@
 # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4417536/. 
 #
 # The script performs following steps:
-# 1) Creating directory structure to store input data and results from different steps of analysis.
-# 2) Downloading of data
+# 1) creating directory structure to store input data and results from different steps of analysis
+# 2) downloading of data
 
 ##############################################################################################################################
 ###SPECIFY DATA VARIABLES###
