@@ -1,7 +1,16 @@
 #!/bin/bash
+
+##############################################################################################################################
+##INFORMATION ABOUT THE SCRIPT###
+# Downloading script designed to download miRNA sequencing data from publication Next-generation sequencing reveals novel 
+# differentially regulated mRNAs, lncRNAs, miRNAs, sdRNAs and a piRNA in pancreatic cancer downloadable here: 
+# https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4417536/. 
 #
-# Following script creates directory structure to store input data and results from different steps of analysis. 
-# Then it downloads sequencing data.
+# 1) Creating directory structure to store input data and results from different steps of analysis.
+# 2) Downloading of data
+
+##############################################################################################################################
+
 # Change PROJECT_DIR variable to your favorite storage. Results from further analysis steps will be stored here.
 PROJECT_DIR=/storage/brno2/home/marek_bfu/Bi5444
 mkdir -p $PROJECT_DIR/raw_sequences
