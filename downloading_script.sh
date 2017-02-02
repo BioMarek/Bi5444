@@ -1,5 +1,5 @@
 #!/bin/bash
-
+#
 ##############################################################################################################################
 ##INFORMATION ABOUT THE SCRIPT###
 # Downloading script designed to download miRNA sequencing data from publication Next-generation sequencing reveals novel 
@@ -10,12 +10,14 @@
 # 2) Downloading of data
 
 ##############################################################################################################################
-
+##SPECIFY DATA VARIABLES###
 # Change PROJECT_DIR variable to your favorite storage. Results from further analysis steps will be stored here.
 PROJECT_DIR=/storage/brno2/home/marek_bfu/Bi5444
 mkdir -p $PROJECT_DIR/raw_sequences
 cd $PROJECT_DIR/raw_sequences
 
+##############################################################################################################################
+##SCRIPT BODY##
 # Because the files have random names we cannot use for loop. Once each file is downloaded it is renamed to avoid confusion.
 wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR852/ERR852089/ERR852089.fastq.gz
 mv ERR852089.fastq.gz control_1.fastq.gz
