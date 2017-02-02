@@ -47,6 +47,7 @@ module add fastx-0.0.13
 
 ##############################################################################################################################
 ###SCRIPT BODY###
+# Make output directory with including all directories (up and down)
 mkdir -p $OUTPUT_DIR
 
 cd $DATASET_DIR
