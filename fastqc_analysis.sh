@@ -13,6 +13,7 @@
 ###SPECIFY DATA VARIABLES###
 # Change PROJECT_DIR variable to your favorite storage. Results from further analysis steps will be stored here.
 PROJECT_DIR=/storage/brno2/home/marek_bfu/Bi5444
+OUTPUT_DIR=$PROJECT_DIR/fastqc_before_trim
 
 ###ADD MODULES###
 # add FastQC module
@@ -20,8 +21,8 @@ module add fastQC-0.10.1
 
 ##############################################################################################################################
 ###SCRIPT BODY###
-cd $PROJECT_DIR
-mkdir fastqc_before_trim # creates folder for results of this analysis step
+# Make output directory with including all directories (up and down)
+mkdir $OUTPUT_DIR
 cd $PROJECT_DIR/raw_sequences
 
 # for loop copies everything to $SCRATCH
@@ -40,6 +41,6 @@ do
 done
 
 # copies results to our storage directory
-mv *.zip $PROJECT_DIR/fastqc_before_trim/ 
+mv *.zip $OUTPUT_DIR
 
 rm -rf  $SCRATCH/*
