@@ -7,7 +7,7 @@
 # The script performs following steps:
 # 1) copping sequences to $SCRATCH
 # 2) quality analysis
-# 3) copping compresed FastQC from $SCRATCH to our directory
+# 3) copping compresed FastQC results from $SCRATCH to our directory
 
 ##############################################################################################################################
 ###SPECIFY DATA VARIABLES###
