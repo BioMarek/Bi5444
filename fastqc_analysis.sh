@@ -6,7 +6,7 @@
 #
 # 1) copping sequences to $SCRATCH
 # 2) quality analysis
-# 3) coping compresed FastQC from $SCRATCH to our directory
+# 3) copping compresed FastQC from $SCRATCH to our directory
 
 ##############################################################################################################################
 ###SPECIFY DATA VARIABLES###
@@ -19,16 +19,20 @@ cd $PROJECT_DIR
 mkdir fastqc_before_trim #creates folder for results of this analysis step
 cd $PROJECT_DIR/raw_sequences
 
-# for loop copying everything to $SCRATCH
+# for loop copies everything to $SCRATCH
 for file in *
 do
   echo copying "$file" # tells us which file is being copied, just to know where we are
   cp $file $SCRATCH/$file
 done
 
-# FastQC analysis
 cd $SCRATCH
+
+
+# add FastQC module
 module add fastQC-0.10.1
+
+# FastQC analysis
 for file in *
 do
   fastqc $file
