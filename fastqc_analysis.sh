@@ -4,7 +4,7 @@
 ###INFORMATION ABOUT THE SCRIPT###
 # Script designed to perform quality check using FastQC version 0.10.1. (http://www.bioinformatics.babraham.ac.uk/projects/fastqc)
 #
-# The script does following steps:
+# The script performs following steps:
 # 1) copping sequences to $SCRATCH
 # 2) quality analysis
 # 3) copping compresed FastQC from $SCRATCH to our directory
