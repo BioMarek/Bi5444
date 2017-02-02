@@ -24,11 +24,11 @@ cd $PROJECT_DIR
 wget https://is.muni.cz/el/1431/podzim2016/Bi5444/um/65638858/adapters_merge.txt
 ADAPTERS=$PROJECT_DIR/adapters_merge.txt
 
-# Downloading and instalation of minion nad swan
+# Downloading and instalation of Minion and Swan
 wget http://wwwdev.ebi.ac.uk/enright-dev/kraken/reaper/src/reaper-15-065.tgz 
 tar zxvf reaper-15-065.tgz
 cd reaper-15-065/src
-make # command that compiles minion and swan
+make # command that compiles Minion and Swan
 
 # Make output directory with including all directories (up and down)
 mkdir -p $OUTPUT_DIR 
