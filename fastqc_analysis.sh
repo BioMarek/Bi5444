@@ -4,6 +4,7 @@
 ###INFORMATION ABOUT THE SCRIPT###
 # Script designed to perform quality check using FastQC version 0.10.1. (http://www.bioinformatics.babraham.ac.uk/projects/fastqc)
 #
+# The script does following steps:
 # 1) copping sequences to $SCRATCH
 # 2) quality analysis
 # 3) copping compresed FastQC from $SCRATCH to our directory
@@ -16,7 +17,7 @@ PROJECT_DIR=/storage/brno2/home/marek_bfu/Bi5444
 ##############################################################################################################################
 ###SCRIPT BODY###
 cd $PROJECT_DIR
-mkdir fastqc_before_trim #creates folder for results of this analysis step
+mkdir fastqc_before_trim # creates folder for results of this analysis step
 cd $PROJECT_DIR/raw_sequences
 
 # for loop copies everything to $SCRATCH
@@ -27,7 +28,6 @@ do
 done
 
 cd $SCRATCH
-
 
 # add FastQC module
 module add fastQC-0.10.1
