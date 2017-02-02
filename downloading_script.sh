@@ -6,6 +6,7 @@
 # differentially regulated mRNAs, lncRNAs, miRNAs, sdRNAs and a piRNA in pancreatic cancer" which can be downloaded here: 
 # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4417536/. 
 #
+# The script does following steps:
 # 1) Creating directory structure to store input data and results from different steps of analysis.
 # 2) Downloading of data
 
