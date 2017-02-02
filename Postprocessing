@@ -166,13 +166,28 @@ plot(pca2$x[,2],pca2$x[,3], col=cond_colours,  pch=19, cex=2, main="Sample to Sa
 legend(-65,-45, levels(conds), fill=cond_colours[levels(conds)], cex=1) 
 dev.off()
 
+##### PLOT 3D PCA
+
 library("rgl")
+# open 3d window
+open3d()
 
+# resize window
+par3d(windowRect = c(100, 100, 612, 612))
 
-plot3d(pca$loadings, col=cond_colours, pch=100, size=15, main="Sample to Sample PCA (VST)")
+# plot points
+plot3d(pca$loadings, col=cond_colours, pch=100, size=2, type="s")
+
+# add title
+title3d(main = "Sample to Sample PCA (VST)", line=4, cex=1.5)
+
+# add legend
+legend3d("topright", legend = paste(levels(conds)), pch = 16, col = cond_colours[levels(conds)], cex=1, inset=c(0.02))
+
+# write to pdf
 rgl.postscript("samples_to_sample_3D_PCA.pdf", "pdf")
 
-# Quick check of DE genes
+##### Quick check of DE genes
 tmpMatrix<-matrix(ncol=1, nrow=5)
 rownames(tmpMatrix)<-c("total genes", paste("LFC >= ", round(LFC_THRESHOLD, 2), " (up)", sep=""), paste("LFC <= ", -(round(LFC_THRESHOLD, 2)), " (down)", sep=""), "not de", "low counts")
 tmpMatrix[1,1]<-nrow(res2)
