@@ -15,6 +15,7 @@
 
 ##############################################################################################################################
 ##SPECIFY DATA VARIABLES###
+# Change PROJECT_DIR variable to your favorite storage. Results from further analysis steps will be stored here.
 PROJECT_DIR=/storage/brno2/home/marek_bfu/Bi5444
 INPUT_SUFFIX=".fastq.gz" # Suffix of files to launch the analysis on
 DATASET_DIR=$PROJECT_DIR/raw_sequences # path to input raw sequences
