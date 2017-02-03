@@ -3,7 +3,7 @@
 ##############################################################################################################################
 ###INFORMATION ABOUT THE SCRIPT###
 # Pre-processing script designed for microRNAs analysis using Cutadapt (http://cutadapt.readthedocs.io/en/stable/index.html) 
-# and Fastx-toolkit (http://hannonlab.cshl.edu/fastx_toolkit/).
+# and FASTX-Toolkit (http://hannonlab.cshl.edu/fastx_toolkit/).
 # It is focused for later use of Chimira (http://www.ebi.ac.uk/research/enright/software/chimira) 
 # and DESeq2 (https://bioconductor.org/packages/release/bioc/html/DESeq2.html) later on.
 #
@@ -33,7 +33,7 @@ QT_THRESHOLD=5 # Threshold for quality trimming; we filter by number of mismatch
 DISC_SHORT=15 # Discard too short sequences after the pre-processing
 DISC_LONG=26 # Discard too long after the pre-processing
 
-# Fastx variables
+# FASTX variables
 QF_THRESHOLD=10 # Threshold for quality filtering
 QF_PERC=85 # Minimal percentage of bases with $QF_THRESHOLD
 
@@ -42,7 +42,7 @@ QF_PERC=85 # Minimal percentage of bases with $QF_THRESHOLD
 module add python27-modules-gcc  
 module add python27-modules-intel
 
-# add FastX toolkit
+# add FASTX-Toolkit
 module add fastx-0.0.13 
 
 ##############################################################################################################################
@@ -62,8 +62,8 @@ do
   cutadapt --quality-cutoff $QT_THRESHOLD,$QT_THRESHOLD --trim-n --max-n=0 \
   --minimum-length $DISC_SHORT --maximum-length $DISC_LONG -o $OUTPUT_DIR/${sample%.fastq*}.ad3trim.fastq.gz $sample #cutadapt detects format automatically
 
-  # Fastx-toolkit quality filtering; to use gz as input/output https://www.biostars.org/p/83237/
-  # Cutadapt can trim only ends of the reads. To filter sequences with low qualitys in the middle, we need to use FastX
+  # FASTX-Toolkit quality filtering; to use gz as input/output https://www.biostars.org/p/83237/
+  # Cutadapt can trim only ends of the reads. To filter sequences with low qualitys in the middle, we need to use FASTX
   gunzip -c $OUTPUT_DIR/${sample%.fastq*}.ad3trim.fastq.gz | fastq_quality_filter -Q $QUALITY \
   -q $QF_THRESHOLD -p $QF_PERC -z -o $OUTPUT_DIR/${sample%.fastq*}.mirna.fastq.gz
 done
