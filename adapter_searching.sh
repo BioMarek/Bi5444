@@ -40,5 +40,9 @@ do
   # Identify top 5 over-represented sequences
   $PROJECT_DIR/reaper-15-065/src/minion search-adapter -i $i -show 5 -write-fasta $OUTPUT_DIR/${i%.*}.minion.fasta
   # Compare them with list of adapters
-  $PROJECT_DIR/reaper-15-065/src/swan -r $ADAPTERS -q $OUTPUT_DIR/${i%.*}.minion.fasta > $OUTPUT_DIR/${i%.*}.minion.compare 
+  $PROJECT_DIR/reaper-15-065/src/swan -r $ADAPTERS -q $OUTPUT_DIR/${i%.*}.minion.fasta > $OUTPUT_DIR/${i%.*}.minion.compare
+  # When the script is done, investigate *.compare files to determine presence of adapters.
 done
+
+
+
