@@ -15,10 +15,10 @@ OUTPUT_DIR=$PROJECT_DIR/counts # path to output sequences
 mkdir $OUTPUT_DIR
 cd $DATASET_DIR
 
-for file in *mirna.fastq.gz
+for file in *mirna.fastq
 do
-   # leaves sequences from fastq file, removes everything else. Guzip unpacks the file and sends output on STDIN; 
-   # sed removes all lines except nucleotide sequence; awk prints lengths of sequencs; uniq counts the sequences.
-   # sort is there because uniq works on adjacent matching lines (see manual)
-   gunzip -c $file | sed -n 'n;p;n;n;' | awk '{print length}' | sort | uniq -c > $OUTPUT_DIR/${file:0:9}_counts.txt
+   # leaves sequences from fastq file, removes everything else. sed removes all lines except nucleotide sequence; 
+   # awk prints lengths of sequencs; uniq counts the sequences. sort is there because uniq works on adjacent matching 
+   # lines (see manual)
+   sed -n 'n;p;n;n;' | awk '{print length}' | sort | uniq -c > $OUTPUT_DIR/${file:0:9}_counts.txt
 done
