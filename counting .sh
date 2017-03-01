@@ -5,7 +5,9 @@
 # The script counts length distribution of sequences so we can make histogram.
 
 #######################################################################################################################
-##SPECIFY DATA VARIABLES###
+###SPECIFY DATA VARIABLES###
+# Change PROJECT_DIR variable to your favorite storage. Results from further analysis
+#  steps will be stored here.
 PROJECT_DIR=/storage/brno2/home/marek_bfu/Bi5444 # path to project dir
 DATASET_DIR=$PROJECT_DIR/trimming # path to input filtered sequences
 OUTPUT_DIR=$PROJECT_DIR/counts # path to output sequences
