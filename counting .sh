@@ -19,7 +19,8 @@ cd $DATASET_DIR
 
 for file in *mirna.fastq.gz
 do
-   # leaves only sequences in fastq file, removes everything else. Gunzip unpacks the file and sends output on STDOUT; 
+   # The script leaves only sequences in fastq file, removes everything else. And then calculates length distribution.
+   # Gunzip unpacks the file and sends output on STDOUT; 
    # sed removes all lines except nucleotide sequence; awk prints lengths of sequencs; uniq counts the sequencesl;
    # sort is there because uniq works on adjacent matching lines (see manual)
    gunzip -c $file | sed -n 'n;p;n;n;' | awk '{print length}' | sort | uniq -c > $OUTPUT_DIR/${file:0:9}_counts.txt
