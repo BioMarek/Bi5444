@@ -7,7 +7,7 @@
 # The script performs following:
 # 1) Processing of the input counts
 # 2) DESeq2 analysis
-# 2) Visualization of the results
+# 3) DESeq2 results visualization
 #
 # INPUT_COUNTS - table with raw genes counts -> first column = miRBase gene id, first row = patient id
 #############################################################################################################################
@@ -53,27 +53,31 @@ setwd(OUTPUT_DIR)
 
 mrcounts<-read.table(INPUT_COUNTS, header=TRUE, row.names=1)
 
-# if we need to reorder the column order we use following line
-# mrcounts<-mrcounts[,c("header_column_4", "header_column_2", "header_column_1", "header_column_3")] # Select and reorder columns
+# If we need to reorder the column order we use following line
+# mrcounts<-mrcounts[,c("header_column_4", "header_column_2", "header_column_1", "header_column_3")]
 
-conds<-factor(c(rep("control", 5), rep("patient", 6)), levels=c("control", "patient")) # Set conditions and make sure they are in correct order
+# Set conditions and make sure they are in correct order
+conds<-factor(c(rep("control", 5), rep("patient", 6)), levels=c("control", "patient")) 
 
-mrcounts<-mrcounts[rowSums(mrcounts)!=0,] # Remove not expressed genes in any sample
+# Remove not expressed genes in any sample
+mrcounts<-mrcounts[rowSums(mrcounts)!=0,] 
 
-# create table for DESeq2, 
-coldata<-as.data.frame(t(t(conds))) #create table, use number of rows according to conds
-colnames(coldata)<-"condition" #name header of the column "condition"
-rownames(coldata)<-colnames(mrcounts) #assign rows the rownames from table mrcounts
-coldata<-as.data.frame(coldata) #make sure it is a data frame (table)
+# Create table for DESeq2
+coldata<-as.data.frame(t(t(conds))) # create table, use number of rows according to conds
+colnames(coldata)<-"condition" # name header of the column "condition"
+rownames(coldata)<-colnames(mrcounts) #a ssign rows the rownames from table mrcounts
+coldata<-as.data.frame(coldata) # make sure it is a data frame (table)
 
-sink("deseq2_design_control.txt") #save output from R into a file (it saves the output that would be in terminal into a file)
+# Save output from R into a file 
+sink("deseq2_design_control.txt")
 coldata
 sink()
-#otveru si "deseq2_design_control.txt" a zkontroluju, jak to dopadlo
+
 ####################################################################################################
 ####################################################################################################
-# DESeq2 part
+# 2) DESeq2 analysis
 # Make the count object, normalise, dispersion and testing, read manual DESeq2
+
 library("DESeq2")
 
 dds<-DESeqDataSetFromMatrix(countData = mrcounts, colData = coldata, design = ~condition)
@@ -81,15 +85,18 @@ dds<-DESeqDataSetFromMatrix(countData = mrcounts, colData = coldata, design = ~c
 # Make sure the levels are correct
 dds$condition<-factor(dds$condition, levels=levels(coldata$condition)) # Make sure conditions are levels 
 
-# The same thing which follows be calculated by >DESeq(dds) instead of three separate commands
+# The same thing which follows be calculated by command >DESeq(dds) instead of three separate commands
 dds<-estimateSizeFactors(dds)
 dds<-estimateDispersions(dds)
 dds<-nbinomWaldTest(dds) 
 cds<-dds
-
 ####################################################################################################
-# DESeq2 results visualization
-res<-results(cds, contrast=c("condition", levels(conds)[2], levels(conds)[1])) # Extract contrasts of interest
+####################################################################################################
+# 3) DESeq2 results visualization
+
+## Create table (.csv) with normalized and raw counts
+# Extract contrasts of interest
+res<-results(cds, contrast=c("condition", levels(conds)[2], levels(conds)[1])) 
 res<-res[order(res$padj),]
 sig<-rownames(res[(abs(res$log2FoldChange) >= LFC_THRESHOLD) & (res$padj < P_THRESHOLD) & !is.na(res$padj),]) # Extract "significant" results
 
@@ -109,70 +116,75 @@ colnames(res2)<-gsub(pattern = ".y", replacement = "_rawCounts", fixed = T, coln
 
 write.table(x = res2, file = "deseq2.csv", sep = "\t", col.names = NA) # Table with normalized and raw counts
 
-
 rawcounts<-counts(cds, normalized=FALSE) # Save raw counts
 normcounts<-counts(cds, normalized=TRUE) # Save normalized counts
 log2counts<-log2(normcounts+1) # Save log2 of normalized counts
 
-vsd<-varianceStabilizingTransformation(cds) # Save counts tranformed with variance Stabilizing Transformation
-vstcounts<-assay(vsd) #stores data for PCA, data have to be rlog or varianceStabilizingTransformation
+vsd<-varianceStabilizingTransformation(cds) # Save counts tranformed with variance Stabilizing Transformation (DESeq2 function)
+vstcounts<-assay(vsd) # Stores data for PCA, data have to be rlog or varianceStabilizingTransformation
 
-# Asign colors according conditions 
+## Asign colors according conditions for data visualization
 library("RColorBrewer") 
 cond_colours<-brewer.pal(length(unique(conds)), "Accent")[as.factor(conds)]
 names(cond_colours)<-conds
 
-# Normalization check
-#pdf(file="deseq2_pre_post_norm_counts.pdf")
+## Normalization check = plot number of raw and normalized reads
+# Create a file, it can be png, pdf..
 png(file="deseq2_pre_post_norm_counts.png")
-#par(mfrow=c(3,1)) # 3 figures arranged in 3 rows and 1 column
-layout(matrix(c(1,2,3),3 ,1, byrow = TRUE), #data, nrow, ncol, byrow=fill matrix by rows
-       heights=c(1,0.69,1)) #respective heights of each row
+
+# set layout of the graphs
+layout(matrix(c(1,2,3),3 ,1, byrow = TRUE), # data, nrow, ncol, byrow=fill matrix by rows
+       heights=c(1,0.69,1)) # respective heights of each row
 barplot(colSums(rawcounts), col=cond_colours, las=2,cex.names=1.1,cex.axis=0.8, main="Pre Normalised Counts", ylim=c(0,(max(apply(rawcounts,2,sum)))*1.1))
 plot(1, type="n", axes=F, xlab="", ylab="")
 legend("center", levels(unique(conds)), fill=cond_colours[levels(unique(conds))], cex=1, horiz=TRUE)
 barplot(colSums(normcounts), col=cond_colours, las=2, cex.names=1.1, cex.axis=0.8, main="Post Normalised Counts", ylim=c(0,(max(apply(normcounts,2,sum)))*1.1))
-dev.off()
 
-# Dispersion plot
+dev.off() # Close the created files with plots
 
-#pdf(file="deseq2_disperison_plot.pdf")
+## Dispersion plot
+
+# Create a file, it can be png, pdf..
 png(file="deseq2_dispersion_plot.png")
 plotDispEsts(cds,main="Dispersion Plot")
 dev.off()
 
 
-# Heatmaps
+## Heatmaps
 
 library("gplots")
 
-hmcol<-brewer.pal(11,"RdBu") #add colours for hmcol, colours for visualization of heatmaps, different then default
+# Add colours for hmcol, colours for visualization of heatmaps, different then default
+hmcol<-brewer.pal(11,"RdBu") 
 
-# specification of the position of the color key (bellow) and the sizes of the graphs
-lmat = rbind(c(0,3,3),c(2,1,1),c(0,4,0))
-lwid = c(1,5,2)
-lhei = c(1,4,1.5)
-
+# Create a file, it can be png, pdf..
 pdf(file="heatmap_raw.pdf")
-heatmap.2(cor(rawcounts), trace="none", col=hmcol, 
-          #lmat = lmat, lwid = lwid, lhei = lhei,
+# Plot heatmap with raw counts
+heatmap.2(cor(rawcounts), trace="none", col=hmcol,
           main="Sample to Sample Correlation (Raw Counts)", RowSideColors=cond_colours, margins=c(9,7))
 dev.off()
-# pdf(file="heatmap_log2.pdf")
+
+# Create a file, it can be png, pdf..
 png(file="heatmap_log2.png")
+# Plot heatmap with log2 counts
 heatmap.2(cor(log2counts), trace="none", col=hmcol, main="Sample to Sample Correlation (Log2)", RowSideColors=cond_colours, margins=c(9,7))
 dev.off()
+
+# Create a file, it can be png, pdf..
 pdf(file="heatmap_vst.pdf")
+# Plot heatmap with vst counts
 heatmap.2(cor(vstcounts), trace="none", col=hmcol, main="Sample to Sample Correlation (VST)", RowSideColors=cond_colours, margins=c(9,7))
 dev.off()
 
-vstcounts<-vstcounts[apply(vstcounts, 1, max) != 0,] #gene counts variance stabiliying transformation
-pca<-princomp(vstcounts)
+## Principal component analysis
+vstcounts<-vstcounts[apply(vstcounts, 1, max) != 0,] # Gene counts variance stabilizing transformation
+pca<-princomp(vstcounts) # Principal component analysis
 
-# pdf(file="sample_to_samples_PCA.pdf")
+# Create a file, it can be png, pdf..
 png(file="sample_to_samples_PCA.png")
-par(mfrow=c(1,1), xpd=NA) # http://stackoverflow.com/questions/12402319/centring-legend-below-two-plots-in-r
-plot(pca$loadings, col=cond_colours,  pch=19, cex=2, main="Sample to Sample PCA (VST)")
+par(mfrow=c(1,1), xpd=NA) # center legend below two plots
+# plot PCA
+plot(pca$loadings, col=cond_colours,  pch=19, cex=2, main="Sample to Sample PCA (VST)") # plot PCA
 text(pca$loadings, as.vector(colnames(mrcounts)), pos=1, cex=0.6)
 legend("bottomright", levels(unique(conds)), fill=cond_colours[levels(unique(conds))], cex=1)
 dev.off()
@@ -181,26 +193,23 @@ dev.off()
 load<-with(pca, unclass(loadings))
 aload<-abs(load) # save absolute values (=without-)
 
-
 pca2<-prcomp(t(vstcounts),scale=TRUE,center=TRUE)
-#pca2$rotation # shows relevant loadings 
-#aload <- abs(pca2$rotation)
-#sweep(aload, 2, colSums(aload), "/")
 
-# pdf(file="contributions_PCA.pdf")
+# Create a file, it can be png, pdf..
 png(file="contributions_PCA.png")
-plot(pca2, type = "l", main="Principal Component Contributions") #check for batch effect
+plot(pca2, type = "l", main="Principal Component Contributions") # check for batch effect
 dev.off()
 
-# pdf(file="samples_to_sample2_PCA.pdf")
+# Create a file, it can be png, pdf..
 png(file="samples_to_sample2_PCA.png")
-par(mfrow=c(1,3), oma=c(2,0,0,0), xpd=NA) # http://stackoverflow.com/questions/12402319/centring-legend-below-two-plots-in-r
+par(mfrow=c(1,3), oma=c(2,0,0,0), xpd=NA) # center legend below two plots
+# plot three graphs with principal component 1 vs 2, 1 vs 3, and 2 vs 3
 plot(pca2$x, col=cond_colours,  pch=19, cex=2, main="Sample to Sample PCA (VST)")
-#text(pca2$x, as.vector(colnames(mrcounts)), pos=3, cex=1)
+
 plot(pca2$x[,1],pca2$x[,3], col=cond_colours,  pch=19, cex=2, main="Sample to Sample PCA (VST)",ylab="PC3",xlab="PC1")
-#text(pca2$x[,1],pca2$x[,3], as.vector(colnames(mrcounts)), pos=3, cex=1)
+
 plot(pca2$x[,2],pca2$x[,3], col=cond_colours,  pch=19, cex=2, main="Sample to Sample PCA (VST)",ylab="PC3",xlab="PC2")
-#text(pca2$x[,2],pca2$x[,3], as.vector(colnames(mrcounts)), pos=3, cex=1)
+
 legend(-65,-45, levels(conds), fill=cond_colours[levels(conds)], cex=1) 
 dev.off()
 
