@@ -94,7 +94,7 @@ cds<-dds
 ####################################################################################################
 # 3) DESeq2 results visualization
 
-## Create table (.csv) with normalized and raw counts
+### Create table (.csv) with normalized and raw counts ###
 # Extract contrasts of interest
 res<-results(cds, contrast=c("condition", levels(conds)[2], levels(conds)[1])) 
 res<-res[order(res$padj),]
@@ -128,62 +128,57 @@ library("RColorBrewer")
 cond_colours<-brewer.pal(length(unique(conds)), "Accent")[as.factor(conds)]
 names(cond_colours)<-conds
 
-## Normalization check = plot number of raw and normalized reads
-# Create a file, it can be png, pdf..
-png(file="deseq2_pre_post_norm_counts.png")
+### Normalization check ###
+png(file="deseq2_pre_post_norm_counts.png") # Create a file, it can be png, pdf..
 
 # set layout of the graphs
 layout(matrix(c(1,2,3),3 ,1, byrow = TRUE), # data, nrow, ncol, byrow=fill matrix by rows
        heights=c(1,0.69,1)) # respective heights of each row
+# plot number of raw and normalized reads
 barplot(colSums(rawcounts), col=cond_colours, las=2,cex.names=1.1,cex.axis=0.8, main="Pre Normalised Counts", ylim=c(0,(max(apply(rawcounts,2,sum)))*1.1))
 plot(1, type="n", axes=F, xlab="", ylab="")
 legend("center", levels(unique(conds)), fill=cond_colours[levels(unique(conds))], cex=1, horiz=TRUE)
 barplot(colSums(normcounts), col=cond_colours, las=2, cex.names=1.1, cex.axis=0.8, main="Post Normalised Counts", ylim=c(0,(max(apply(normcounts,2,sum)))*1.1))
-
 dev.off() # Close the created files with plots
 
-## Dispersion plot
+## Dispersion plot ###
 
-# Create a file, it can be png, pdf..
-png(file="deseq2_dispersion_plot.png")
+png(file="deseq2_dispersion_plot.png") # Create a file, it can be png, pdf..
 plotDispEsts(cds,main="Dispersion Plot")
 dev.off()
 
 
-## Heatmaps
+## Heatmaps ###
 
 library("gplots")
 
 # Add colours for hmcol, colours for visualization of heatmaps, different then default
 hmcol<-brewer.pal(11,"RdBu") 
 
-# Create a file, it can be png, pdf..
-pdf(file="heatmap_raw.pdf")
 # Plot heatmap with raw counts
+pdf(file="heatmap_raw.pdf")# Create a file, it can be png, pdf..
 heatmap.2(cor(rawcounts), trace="none", col=hmcol,
           main="Sample to Sample Correlation (Raw Counts)", RowSideColors=cond_colours, margins=c(9,7))
 dev.off()
 
-# Create a file, it can be png, pdf..
-png(file="heatmap_log2.png")
 # Plot heatmap with log2 counts
+png(file="heatmap_log2.png")# Create a file, it can be png, pdf..
 heatmap.2(cor(log2counts), trace="none", col=hmcol, main="Sample to Sample Correlation (Log2)", RowSideColors=cond_colours, margins=c(9,7))
 dev.off()
 
-# Create a file, it can be png, pdf..
-pdf(file="heatmap_vst.pdf")
 # Plot heatmap with vst counts
+pdf(file="heatmap_vst.pdf") # Create a file, it can be png, pdf..
 heatmap.2(cor(vstcounts), trace="none", col=hmcol, main="Sample to Sample Correlation (VST)", RowSideColors=cond_colours, margins=c(9,7))
 dev.off()
 
-## Principal component analysis
+### Principal component analysis ###
+
 vstcounts<-vstcounts[apply(vstcounts, 1, max) != 0,] # Gene counts variance stabilizing transformation
 pca<-princomp(vstcounts) # Principal component analysis
 
-# Create a file, it can be png, pdf..
-png(file="sample_to_samples_PCA.png")
+# plot PCA, 
+png(file="sample_to_samples_PCA.png") # Create a file, it can be png, pdf..
 par(mfrow=c(1,1), xpd=NA) # center legend below two plots
-# plot PCA
 plot(pca$loadings, col=cond_colours,  pch=19, cex=2, main="Sample to Sample PCA (VST)") # plot PCA
 text(pca$loadings, as.vector(colnames(mrcounts)), pos=1, cex=0.6)
 legend("bottomright", levels(unique(conds)), fill=cond_colours[levels(unique(conds))], cex=1)
@@ -195,26 +190,20 @@ aload<-abs(load) # save absolute values (=without-)
 
 pca2<-prcomp(t(vstcounts),scale=TRUE,center=TRUE)
 
-# Create a file, it can be png, pdf..
-png(file="contributions_PCA.png")
+png(file="contributions_PCA.png") # Create a file, it can be png, pdf..
 plot(pca2, type = "l", main="Principal Component Contributions") # check for batch effect
 dev.off()
 
-# Create a file, it can be png, pdf..
-png(file="samples_to_sample2_PCA.png")
+# Plot three graphs with principal component 1 vs 2, 1 vs 3, and 2 vs 3
+png(file="samples_to_sample2_PCA.png") # Create a file, it can be png, pdf..
 par(mfrow=c(1,3), oma=c(2,0,0,0), xpd=NA) # center legend below two plots
-# plot three graphs with principal component 1 vs 2, 1 vs 3, and 2 vs 3
 plot(pca2$x, col=cond_colours,  pch=19, cex=2, main="Sample to Sample PCA (VST)")
-
 plot(pca2$x[,1],pca2$x[,3], col=cond_colours,  pch=19, cex=2, main="Sample to Sample PCA (VST)",ylab="PC3",xlab="PC1")
-
 plot(pca2$x[,2],pca2$x[,3], col=cond_colours,  pch=19, cex=2, main="Sample to Sample PCA (VST)",ylab="PC3",xlab="PC2")
-
 legend(-65,-45, levels(conds), fill=cond_colours[levels(conds)], cex=1) 
 dev.off()
 
 ## PLOT 3D PCA
-
 library("rgl")
 # open 3d window
 open3d()
@@ -225,6 +214,7 @@ legend3d("topleft", legend = paste(levels(conds)), pch = 16, col = cond_colours[
 rgl.postscript("samples_to_sample_3D_PCA.pdf", "pdf") # write to pdf
 snapshot3d(file="samples_to_sample_3D_PCA.png", top = TRUE ) # write to png
 
+####################################################################################################
 # Quick check of DE genes
 tmpMatrix<-matrix(ncol=1, nrow=5)
 rownames(tmpMatrix)<-c("total genes", paste("LFC >= ", round(LFC_THRESHOLD, 2), " (up)", sep=""), paste("LFC <= ", -(round(LFC_THRESHOLD, 2)), " (down)", sep=""), "not de", "low counts")
