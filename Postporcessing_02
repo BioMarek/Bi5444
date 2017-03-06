@@ -16,13 +16,9 @@
 # rm(list=ls(all=TRUE))
 
 ### Install packages ###
-install.packages("pheatmap")
 install.packages("rgl")
 install.packages("gplots")
 install.packages("RColorBrewer")
-install.packages("calibrate")
-install.packages("ggplot2")
-install.packages("reshape")
 
 # install bioconductor
 source("http://bioconductor.org/biocLite.R")
@@ -262,7 +258,7 @@ dev.off()
 
 TOP<-TOP_BCKP
 
-## Heatmaps of selected genes
+## Heatmaps of selected DE genes
 library("DESeq2")
 library("gplots")
 
@@ -290,13 +286,14 @@ lmat = rbind(c(0,3,3),c(2,1,1),c(4,0,0))
 lwid = c(1.5,4,2)
 lhei = c(1.5,4,1.5)
 
+# Heatmap of DE genes, hierachicaly clustered
 png(file="deseq2_heatmaps_selected_orderBaseMeanCluster.png") # Create a file, it can be png, pdf..
 heatmap.2(log2.norm.counts, Rowv=TRUE, Colv=TRUE, margins=c(5,10),
           lmat = lmat, lwid = lwid, lhei = lhei,
           main = paste("Top ", TOP, " significantly DE genes (log2norm)", sep=""), na.color="Green")
 dev.off()
 
-
+# Heatmap of DE genes, not hierachicaly clustered
 png(file="deseq2_heatmaps_selected_orderBaseMean.png")  # Create a file, it can be png, pdf..
 heatmap.2(log2.norm.counts, dendrogram="none", Rowv=FALSE, Colv=FALSE, margins=c(5,10),
           lmat = lmat, lwid = lwid, lhei = lhei,
