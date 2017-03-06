@@ -156,7 +156,7 @@ library("gplots")
 hmcol<-brewer.pal(11,"RdBu") 
 
 # Plot heatmap with raw counts
-pdf(file="heatmap_raw.pdf")# Create a file, it can be png, pdf..
+pdf(file="heatmap_raw.pdf") # Create a file, it can be png, pdf..
 heatmap.2(cor(rawcounts), trace="none", col=hmcol,
           main="Sample to Sample Correlation (Raw Counts)", RowSideColors=cond_colours, margins=c(9,7))
 dev.off()
@@ -233,44 +233,36 @@ noquote(tmpMatrix)
 sink()
 
 ####################################################################################################
-#
 TOP_BCKP<-TOP
 
 if(length(sig)<TOP){ # Avoid error by ploting more TOP genes than significantly DE genes
   TOP<-length(sig)
 }
 
-#pdf(file=paste("volcanoplot_", levels(conds)[1], "_v_", levels(conds)[2],".pdf", sep=""))
-png(file=paste("volcanoplot_", levels(conds)[1], "_v_", levels(conds)[2],".png", sep=""))
-par(mfrow=c(1,1), xpd=NA) # http://stackoverflow.com/questions/12402319/centring-legend-below-two-plots-in-r
-### Version 1 to make volcano plot
+## Volcano plot
+png(file=paste("volcanoplot_", levels(conds)[1], "_v_", levels(conds)[2],".png", sep="")) # Create a file, it can be png, pdf..
+par(mfrow=c(1,1), xpd=NA) # center legend below two plots
+
 # Make a basic volcano plot
 with(res, plot(log2FoldChange, -log10(padj), pch=20, cex=0.4, main=paste("Volcanoplot ",levels(conds)[2], " vs ", levels(conds)[1], sep="")))
 # Add colored points: red if padj<0.01, orange of log2FC>2.5, green if both)
 with(subset(res, res$padj<0.01 ), points(log2FoldChange, -log10(padj), pch=20, cex=0.4, col="red"))
 with(subset(res, abs(res$log2FoldChange)>2.5), points(log2FoldChange, -log10(padj), pch=20, cex=0.4, col="orange"))
 with(subset(res, res$padj<0.01 & abs(res$log2FoldChange)>2.5), points(log2FoldChange, -log10(padj), pch=20, cex=0.4, col="darkgreen"))
-
-#Add labels points with the textxy function from the calibrate plot
+#Add labels points with the textxy function from the calibrate plot library
 library(calibrate)
 with(subset(res[1:9,]), textxy(log2FoldChange, -log10(padj), labs=rownames(res[1:9,]), cex=0.8, pos=1))
-
-### Version 2 to make volcanoplot
-#plot(res$log2FoldChange, -log(res$padj, 10), main=paste("Volcanoplot ",levels(conds)[2], " v ", levels(conds)[1], " top ", TOP, " genes", sep=""), cex=0.4, pch=19)
-#text(res[1:length(sig),]$log2FoldChange, -log(res[1:length(sig),]$padj,10), 
-    #labels=parsedEnsembl[parsedEnsembl$gene_id %in% rownames(res[1:length(sig),]), "gene_name"], cex=0.3, pos=3)
-#text(res[1:TOP,]$log2FoldChange , -log(res[1:TOP,]$padj,10), labels=res2$Row.names[1:TOP,], "gene_name", adj=0,3, cex=0.3, pos=3)
-#text(labels=res2$Row.names[1:TOP,], adj=0,3, cex=0.3, pos=3)
+# Add legend
 legend("bottomleft", levels(conds)[1], cex=0.5)
 legend("bottomright", levels(conds)[2], cex=0.5)
+# Add lines denoting area of interest
 abline(h=-log(P_THRESHOLD, 10), col="red", lty=2)
 abline(v=c(-LFC_THRESHOLD, LFC_THRESHOLD), col="darkblue", lty=2)
 dev.off()
 
 TOP<-TOP_BCKP
 
-# Heatmaps of selected genes
-library("pheatmap")
+## Heatmaps of selected genes
 library("DESeq2")
 library("gplots")
 
@@ -282,12 +274,10 @@ if(length(select)>TOP){
 }
 
 nt<-normTransform(dds) # defaults to log2(x+1)
-# nt<-rlog(dds, blind=FALSE)
-# nt<-varianceStabilizingTransformation(dds, blind=FALSE)
 log2.norm.counts<-assay(nt)[select,]
 log2.norm.counts<-log2.norm.counts[order(rowMeans(log2.norm.counts)),]
 
-df<-as.data.frame(colData(dds) [,c("condition")]) #it only have one column named condition, so we cannot select two columns, one named condition and the other named patient
+df<-as.data.frame(colData(dds) [,c("condition")]) # it only have one column named condition, so we cannot select two columns, one named condition and the other named patient
 
 TOP_BCKP<-TOP
 
@@ -295,24 +285,19 @@ if(TOP>length(select)){
   TOP<-length(select)
 }
 
-#specification of the position of the color key (bellow) and the sizes of the graphs
+# specification of the position of the color key (below) and the sizes of the graphs
 lmat = rbind(c(0,3,3),c(2,1,1),c(4,0,0))
 lwid = c(1.5,4,2)
 lhei = c(1.5,4,1.5)
-#pdf(file="deseq2_heatmaps_selected_orderBaseMeanCluster.pdf")
-png(file="deseq2_heatmaps_selected_orderBaseMeanCluster.png")
-#pheatmap(log2.norm.counts, cluster_rows=TRUE, show_rownames=TRUE, cluster_cols=TRUE, annotation_col=df, 
- #        main = paste("Top ", TOP, " significantly DE genes (log2norm)", sep=""))
+
+png(file="deseq2_heatmaps_selected_orderBaseMeanCluster.png") # Create a file, it can be png, pdf..
 heatmap.2(log2.norm.counts, Rowv=TRUE, Colv=TRUE, margins=c(5,10),
           lmat = lmat, lwid = lwid, lhei = lhei,
           main = paste("Top ", TOP, " significantly DE genes (log2norm)", sep=""), na.color="Green")
 dev.off()
 
-#pdf(file="deseq2_heatmaps_selected_orderBaseMean.pdf")
-png(file="deseq2_heatmaps_selected_orderBaseMean.png")
-#pheatmap(log2.norm.counts, cluster_rows=FALSE, show_rownames=TRUE,
-#         cluster_cols=FALSE, annotation_col=df, main = paste("Top ", TOP, " significantly DE genes (log2norm)", sep=""))
 
+png(file="deseq2_heatmaps_selected_orderBaseMean.png")  # Create a file, it can be png, pdf..
 heatmap.2(log2.norm.counts, dendrogram="none", Rowv=FALSE, Colv=FALSE, margins=c(5,10),
           lmat = lmat, lwid = lwid, lhei = lhei,
           main = paste("Top ", TOP, " significantly DE genes (log2norm)", sep=""))
@@ -324,18 +309,3 @@ graphics.off()
 
 system("for i in deseq2_heatmaps_selected_*; do pdftk $i cat 2-end output tmp.pdf; mv tmp.pdf $i; done") # Cut first empty page from heatmap plot
 
-### extract genes with abs(log2FoldChange)>2.5 and p_value<P_Threshold
-res_select<-res2[res2$padj<0.01 & abs(res2$log2FoldChange)>2.5,]
-res_select<-res_select[,c("control_1_normCounts", "control_2_normCounts", "control_3_normCounts", "control_4_normCounts", "control_5_normCounts")]
-
-## chci plot y tohohle res_select[,c("control_1_normCounts", "control_2_normCounts", "control_3_normCounts", "control_4_normCounts", "control_5_normCounts")
-library("ggplot2")
-library("reshape")
-res_select$group <- row.names(res_select)
-res_select_m <- melt(res_select, id.vars = "group")
-ggplot(res_select_m, aes(group, value)) # + geom_boxplot(color=cond_colours) #
-+ coord_flip()
-
-ph = 2.75
-pw = 4
-ggsave("gene_plot.png", height=ph, width=pw)
